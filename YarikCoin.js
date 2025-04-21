@@ -13,7 +13,7 @@ if (localStorage.getItem("balance")) {
     localStorage.setItem("balance", 100);
     balance = 100;
 }
-document.getElementById('balance').innerHTML = balance.toFixed(5) + '$'
+document.getElementById('balance').innerHTML = Math.abs(balance.toFixed(5)) + '$'
 
 var onBalance;
 if (localStorage.getItem("onBalance")) {
@@ -42,7 +42,7 @@ function buy() {
     if (!(ans == ans.toString())) {
         return alert("Enter a number!");
     }
-    if (ans * nowPrice >= balance) {
+    if ((ans * nowPrice).toFixed(5) > balance.toFixed(5)) {
         return alert("You don’t have enough balance!");
     }
     if (ans < 0.00001) {
@@ -53,8 +53,8 @@ function buy() {
     onBalance = localStorage.getItem("onBalance");
     balance -= ans * nowPrice;
     localStorage.setItem("balance", balance);
-    document.getElementById('balance').innerHTML = balance.toFixed(5) + '$';
-        document.getElementById('onBalance').innerHTML = onBalance;
+    document.getElementById('balance').innerHTML = Math.abs(balance.toFixed(5)) + '$';
+    document.getElementById('onBalance').innerHTML = onBalance;
 }
 
 function sell() {
@@ -72,7 +72,7 @@ function sell() {
     localStorage.setItem("onBalance", onBalance);
     balance += ans * nowPrice;
     localStorage.setItem("balance", balance);
-    document.getElementById('balance').innerHTML = balance.toFixed(5) + '$';
+    document.getElementById('balance').innerHTML = Math.abs(balance.toFixed(5)) + '$';
     document.getElementById('onBalance').innerHTML = onBalance;
 }
 

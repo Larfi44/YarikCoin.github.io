@@ -105,19 +105,19 @@ if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760]) >= 0
 }
 
 if (Math.floor(Date.now() / 3600000 - startDate) - 1 < 0) {
-    document.getElementById('hourAgo').innerHTML = "None"
+    document.getElementById('hourAgo').innerHTML = "None";
 }
 if (Math.floor(Date.now() / 3600000 - startDate) - 24 < 0) {
-    document.getElementById('dayAgo').innerHTML = "None"
+    document.getElementById('dayAgo').innerHTML = "None";
 }
 if (Math.floor(Date.now() / 3600000 - startDate) - 168 < 0) {
-    document.getElementById('weekAgo').innerHTML = "None"
+    document.getElementById('weekAgo').innerHTML = "None";
 }
 if (Math.floor(Date.now() / 3600000 - startDate) - 720 < 0) {
-    document.getElementById('monthAgo').innerHTML = "None"
+    document.getElementById('monthAgo').innerHTML = "None";
 }
 if (Math.floor(Date.now() / 3600000 - startDate) - 8760 < 0) {
-    document.getElementById('yearAgo').innerHTML = "None"
+    document.getElementById('yearAgo').innerHTML = "None";
 }
 
 document.getElementById('hourAgo').innerHTML = price[Math.floor(Date.now() / 3600000 - startDate) - 1].toFixed(5) + "$";

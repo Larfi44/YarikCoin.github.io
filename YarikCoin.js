@@ -20,8 +20,9 @@ if (localStorage.getItem("onBalance")) {
     onBalance = Number(localStorage.getItem("onBalance"))
 } else {
     localStorage.setItem("onBalance", 0);
+    onBalance = 0;
 }
-document.getElementById('onBalance').innerHTML = onBalance
+document.getElementById('onBalance').innerHTML = onBalance;
 
 var maxPrice = price[0];
 var minPrice = price[0];

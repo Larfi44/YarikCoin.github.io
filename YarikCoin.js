@@ -42,7 +42,7 @@ function buy() {
     if (!(ans == ans.toString())) {
         return alert("Enter a number!");
     }
-    if (ans * nowPrice > balance) {
+    if (ans * nowPrice >= balance) {
         return alert("You don’t have enough balance!");
     }
     if (ans < 0.00001) {

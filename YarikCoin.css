@@ -1,5 +1,5 @@
 body {
-    background-color: cyan;
+    background-color: rgb(177, 250, 250);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -28,7 +28,7 @@ button {
 
 .shop {
     margin-top: 50px;
-    background-color: greenyellow;
+    background-color: rgb(185, 240, 104);
     display: flex;
     align-items: center;
     flex-direction: column;

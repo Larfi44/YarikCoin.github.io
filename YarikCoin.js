@@ -38,9 +38,12 @@ document.getElementById('maxPrice').innerHTML = maxPrice.toFixed(5) + '$'
 document.getElementById('minPrice').innerHTML = minPrice.toFixed(5) + '$'
 
 function buy() {
-    var ans = Number(prompt("How many YarikCoin do you want to buy? For the full balance you can buy " + (balance / nowPrice).toFixed(5) + " YarikCoin."));
+    var ans = Number(prompt("How many YarikCoin do you want to buy? For the full balance you can buy " + Math.abs((balance / nowPrice).toFixed(5)) + " YarikCoin."));
     if (!(ans == ans.toString())) {
         return alert("Enter a number!");
+    }
+    if (ans == "") {
+        return;
     }
     if ((ans * nowPrice).toFixed(5) > balance.toFixed(5)) {
         return alert("You don’t have enough balance!");
@@ -58,9 +61,12 @@ function buy() {
 }
 
 function sell() {
-    var ans = Number(prompt("How many YarikCoin do you want to sell? If you sell all YarikCoin, you will get " + (onBalance * nowPrice).toFixed(5) + "$"));
+    var ans = Number(prompt("How many YarikCoin do you want to sell? If you sell all YarikCoin, you will get " + Math.abs((onBalance * nowPrice).toFixed(5)) + "$"));
     if (!(ans == ans.toString())) {
         return alert("Enter a number!");
+    }
+    if (ans == "") {
+        return;
     }
     if (ans > onBalance) {
         return alert("You don’t have enough YarikCoin!");
@@ -81,27 +87,27 @@ document.getElementById('sell').addEventListener("click", sell)
 
 if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 1]) >= 0) {
     document.getElementById('hourAgoChange').innerHTML = "(+" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 1]).toFixed(5) + "$)"
-} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 1]) >= 0){
+} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 1]) <= 0){
     document.getElementById('hourAgoChange').innerHTML = "(" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 1]).toFixed(5) + "$)"
 }
 if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 24]) >= 0) {
     document.getElementById('dayAgoChange').innerHTML = "(+" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 24]).toFixed(5) + "$)"
-} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 24]) >= 0) {
+} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 24]) <= 0) {
     document.getElementById('dayAgoChange').innerHTML = "(" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 24]).toFixed(5) + "$)"
 }
 if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 168]) >= 0) {
     document.getElementById('weekAgoChange').innerHTML = "(+" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 168]).toFixed(5) + "$)"
-} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 168])){
+} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 168]) <= 0){
     document.getElementById('weekAgoChange').innerHTML = "(" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 168]).toFixed(5) + "$)"
 }
 if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 720]) >= 0) {
     document.getElementById('monthAgoChange').innerHTML = "(+" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 720]).toFixed(5) + "$)"
-} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 720])){
+} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 720]) <= 0){
     document.getElementById('monthAgoChange').innerHTML = "(" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 720]).toFixed(5) + "$)"
 }
 if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760]) >= 0) {
     document.getElementById('yearAgoChange').innerHTML = "(+" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760]).toFixed(5) + "$)"
-} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760])){
+} else if ((nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760]) <= 0){
     document.getElementById('yearAgoChange').innerHTML = "(" + (nowPrice - price[Math.floor(Date.now() / 3600000 - startDate) - 8760]).toFixed(5) + "$)"
 }
 

@@ -1,0 +1,168 @@
+body {
+  background-color: rgb(177, 250, 250);
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 25px;
+}
+
+#settingsBtn {
+  width: 50px;
+}
+
+button {
+  padding: 30px 60px;
+  border: none;
+  border-radius: 6px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 40px;
+  font-size: 25px;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  font-size: 25px;
+}
+
+.shop {
+  margin-top: 50px;
+  background-color: rgb(185, 240, 104);
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 900px;
+  font-size: 25px;
+}
+
+.history {
+  margin-top: 50px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 900px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 20px;
+}
+
+@media (max-width: 1000px) {
+  .shop {
+    font-size: 20px;
+  }
+  .history {
+    font-size: 20px;
+  }
+}
+@media (max-width: 850px) {
+  .info {
+    font-size: 20px;
+  }
+  .shop {
+    font-size: 17px;
+  }
+  .history {
+    font-size: 15px;
+  }
+}
+@media (max-width: 650px) {
+  button {
+    padding: 26px 48px;
+    font-size: 18px;
+  }
+  .info {
+    font-size: 18px;
+  }
+  .shop {
+    font-size: 13px;
+  }
+  .history {
+    font-size: 13px;
+  }
+}
+@media (max-width: 550px) {
+  button {
+    padding: 22px 44px;
+    font-size: 18px;
+  }
+  .info {
+    font-size: 17px;
+  }
+  .shop {
+    font-size: 11px;
+  }
+  .history {
+    font-size: 11px;
+  }
+}
+@media (max-width: 470px) {
+  button {
+    padding: 18px 36px;
+    font-size: 18px;
+  }
+  .info {
+    font-size: 14px;
+  }
+  .shop {
+    font-size: 10px;
+  }
+  .history {
+    font-size: 10px;
+  }
+}
+@media (max-width: 400px) {
+  button {
+    padding: 18px 36px;
+    font-size: 18px;
+  }
+  .info {
+    font-size: 13px;
+  }
+  .shop {
+    font-size: 9px;
+  }
+  .history {
+    font-size: 8px;
+  }
+}
+
+.titleYarikCoin {
+  width: 200px;
+  transform: translateY(-20px);
+}
+
+.price {
+  display: flex;
+  flex-direction: row;
+}
+
+#buy {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+}
+
+#buy:hover {
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+#sell {
+  background: linear-gradient(135deg, #f44336, #c62828);
+  color: white;
+  margin-left: 12px;
+}
+
+#sell:hover {
+  background: linear-gradient(135deg, #c62828, #f44336);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}

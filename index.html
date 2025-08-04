@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css"></link>
+    <link rel="icon" href="YarikCoin.png">
+    <title>YarikCoin</title>
+</head>
+<body>
+    <img src="img/settings-img.png" alt="settings" id="settingsBtn">
+    <main>
+        <img class="titleYarikCoin" src="img/yarikCoin.png" alt="YarikCoin" title="YarikCoin">
+    <div class="info">
+        <h1><u>YarikCoin</u></h1>
+        <div class="price">
+            <h1 style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-right: 10px;">Price:</h1>
+            <h1 id="price"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Max price:</h1>
+            <h1 id="maxPrice" style="display: inline-block;"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Min price:</h1>
+            <h1 id="minPrice" style="display: inline-block;"></h1>
+        </div>
+    </div>
+    <div class="shop">
+        <h1 style="font-family:cursive;">Shop:</h1>
+        <div class="btns">
+            <button id="buy">Buy</button>
+            <button id="sell">Sell</button>
+        </div>
+        <div class="balance">
+            <h1 style="display: inline-block;">Balance:</h1>
+            <h1 id="balance" style="display: inline-block;"></h1>
+        </div>
+        <div class="onBalance">
+            <h1 style="display: inline-block;">YarikCoin on balance:</h1>
+            <h1 id="onBalance" style="display: inline-block;"></h1>
+        </div>
+    </div>
+    <div class="history">
+        <h1 style="font-family:cursive;">History:</h1>
+        <h1>Release date: April 21, 2025</h1>
+        <h1>Start price: 0.4$</h1>
+        <div>
+            <h1 style="display: inline-block;">Price hour ago:</h1>
+            <h1 id="hourAgo" style="display: inline-block;"></h1>
+            <h1 id="hourAgoChange" style="display: inline-block;"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Price day ago:</h1>
+            <h1 id="dayAgo" style="display: inline-block;"></h1>
+            <h1 id="dayAgoChange" style="display: inline-block;"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Price week ago:</h1>
+            <h1 id="weekAgo" style="display: inline-block;"></h1>
+            <h1 id="weekAgoChange" style="display: inline-block;"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Price month ago:</h1>
+            <h1 id="monthAgo" style="display: inline-block;"></h1>
+            <h1 id="monthAgoChange" style="display: inline-block;"></h1>
+        </div>
+        <div>
+            <h1 style="display: inline-block;">Price year ago:</h1>
+            <h1 id="yearAgo" style="display: inline-block;"></h1>
+            <h1 id="yearAgoChange" style="display: inline-block;"></h1>
+        </div>
+    </div>
+    <audio src="digit-all.mp3" type="audio/mpeg" loop autoplay></audio>
+    </main>
+</body>
+<script type="module" src="script.mjs"></script>
+</html>

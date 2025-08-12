@@ -1,19 +1,47 @@
 body {
   background-color: rgb(177, 250, 250);
+  padding: 20px;
 }
 
 main {
   display: flex;
+  justify-content: center;
   flex-direction: column;
   align-items: center;
-  font-size: 25px;
 }
 
 #settingsBtn {
-  width: 50px;
+  width: 55px;
+  transition: transform 0.7s ease-in-out;
+  position: sticky;
+  top: 20px;
+  left: 20px;
 }
 
-button {
+#settingsBtn:hover {
+  cursor: pointer;
+  transform: rotate(360deg);
+}
+
+#settingsBlock {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background-color: #e7e7e7;
+  z-index: 99;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  font-size: 40px;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.shopBtn {
   padding: 30px 60px;
   border: none;
   border-radius: 6px;
@@ -136,7 +164,6 @@ button {
 
 .titleYarikCoin {
   width: 200px;
-  transform: translateY(-20px);
 }
 
 .price {

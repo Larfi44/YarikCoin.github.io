@@ -1,5 +1,41 @@
 import price from "./data/price.mjs";
 
+const settingsBtn = document.getElementById("settingsBtn");
+const settingsBlock = document.getElementById("settingsBlock");
+const volumeControl = document.getElementById("volumeControl");
+const mainMusic = document.getElementById("mainMusic");
+const clickSound = document.getElementById("clickSound");
+
+clickSound.load();
+mainMusic.load();
+
+settingsBlock.style.display = "none"
+
+volumeControl.addEventListener("input", function() {
+  mainMusic.volume = this.value;
+  localStorage.setItem('musicVolume', this.value);
+});
+
+window.addEventListener('load', function() {
+  const savedVolume = localStorage.getItem('musicVolume');
+  if (savedVolume) {
+    volumeControl.value = savedVolume;
+    mainMusic.volume = savedVolume;
+  }
+});
+
+settingsBtn.addEventListener("click", ()=> {
+  clickSound.currentTime = 0;
+  clickSound.play();
+  if (settingsBlock.style.display == "none") {
+    settingsBlock.style.display = "block";
+    settingsBtn.style.opacity = "0.6";
+  } else {
+    settingsBlock.style.display = "none";
+    settingsBtn.style.opacity = "1";
+  }
+})
+
 const startDate = 484788;
 var nowPrice = price[Math.floor(Date.now() / 3600000 - startDate)].toFixed(5);
 

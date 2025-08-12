@@ -4,17 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css"></link>
-    <link rel="icon" href="YarikCoin.png">
+    <link rel="icon" href="img/YarikCoin.png">
     <title>YarikCoin</title>
 </head>
 <body>
-    <img src="img/settings-img.png" alt="settings" id="settingsBtn">
+        <img src="img/settings-img.png" alt="settings" id="settingsBtn">
+        <div id="settingsBlock">
+            <h3 style="padding-bottom: 20px">Settings</h3>
+            <label>
+                <span>Volume</span>
+                <input id="volumeControl" type="range" min="0" max="1" step="0.001">
+            </label>
+                <p style="margin-bottom: 10px">Language:</p>
+                <select style="width: 100px; height: 50px; font-size: 50px;" id="language">
+                    <option selected>English</option>
+                    <option>Русский</option>
+                </select>
+        </div>
     <main>
-        <img class="titleYarikCoin" src="img/yarikCoin.png" alt="YarikCoin" title="YarikCoin">
+        <img class="titleYarikCoin" src="img/YarikCoin.png" alt="YarikCoin" title="YarikCoin">
     <div class="info">
         <h1><u>YarikCoin</u></h1>
         <div class="price">
-            <h1 style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; margin-right: 10px;">Price:</h1>
+            <h1 style="margin-right: 10px;">Price:</h1>
             <h1 id="price"></h1>
         </div>
         <div>
@@ -28,9 +40,9 @@
     </div>
     <div class="shop">
         <h1 style="font-family:cursive;">Shop:</h1>
-        <div class="btns">
-            <button id="buy">Buy</button>
-            <button id="sell">Sell</button>
+        <div id="shopButtons">
+            <button id="buy" class="shopBtn">Buy</button>
+            <button id="sell" class="shopBtn">Sell</button>
         </div>
         <div class="balance">
             <h1 style="display: inline-block;">Balance:</h1>
@@ -71,7 +83,8 @@
             <h1 id="yearAgoChange" style="display: inline-block;"></h1>
         </div>
     </div>
-    <audio src="digit-all.mp3" type="audio/mpeg" loop autoplay></audio>
+    <audio id="mainMusic" src="/audio/digit-all.mp3" type="audio/mpeg" autoplay loop></audio>
+    <audio id="clickSound" src="/audio/clickSound.mp3" type="audio/mpeg"></audio>
     </main>
 </body>
 <script type="module" src="script.mjs"></script>

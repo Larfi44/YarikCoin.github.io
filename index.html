@@ -1,470 +1,251 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>YarikCoin</title>
-    <link rel="icon" href="img/YarikCoin.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root{
-            --bg: linear-gradient(180deg,#b1fafa,#f6fff9);
-            --card: rgba(255,255,255,0.95);
-            --accent: #2e7d32;
-            --danger: #c62828;
-            --glass: rgba(255,255,255,0.6);
-            --muted:#56626a;
-            --radius:14px;
-        }
-        html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;box-sizing:border-box;}
-        *, *:before, *:after {box-sizing: inherit;}
-        body{background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:28px;color:#0b1720}
-        .container{width:min(1100px,95%);display:flex;flex-direction:column;gap:26px}
-        header{display:flex;align-items:center;justify-content:space-between}
-        .brand{display:flex;align-items:center;gap:14px}
-        .brand img{width:64px;height:64px;border-radius:12px}
-        .brand h1{margin:0;font-size:28px;letter-spacing:0.6px}
-        #settingsBtn{width:52px;height:52px;border-radius:12px;background:var(--glass);display:grid;place-items:center;cursor:pointer;border:1px solid rgba(0,0,0,0.06);transition:transform .25s}
-        #settingsBtn:hover{transform:rotate(12deg)}
-        main{display:grid;grid-template-columns:1fr 420px;gap:24px}
-        .card{background:var(--card);border-radius:var(--radius);padding:20px;box-shadow:0 6px 20px rgba(11,23,32,0.08);}
-        .left{display:flex;flex-direction:column;gap:18px}
-        .title-wrap{display:flex;align-items:center;gap:18px}
-        .title-wrap img{width:96px}
-        .price-row{display:flex;align-items:center;gap:12px}
-        .price-value{font-size:30px;font-weight:700}
-        .small-muted{color:var(--muted);font-size:14px}
-        .shop{display:flex;flex-direction:column;gap:14px}
-        .shop-actions{display:flex;gap:12px}
-        .btn{padding:14px 26px;border-radius:10px;border:none;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(2,8,10,0.06);transition: background-color .2s, opacity .2s;}
-        .btn:disabled{opacity:0.6;cursor:not-allowed;}
-        .btn-buy{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
-        .btn-sell{background:linear-gradient(135deg,#f44336,#c62828);color:#fff}
-        .balance-row{display:flex;align-items:center;gap:12px}
-        .history{display:flex;flex-direction:column;gap:10px}
-        .time-period-selector{display:flex;flex-wrap:wrap;gap:8px}
-        .time-btn{padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer}
-        .time-btn.active{background:var(--accent);color:#fff;border-color:transparent}
-        .modal{position:fixed;inset:0;display:grid;place-items:center;z-index:120;backdrop-filter:blur(6px);visibility:hidden;opacity:0;transition:opacity .18s,visibility .18s}
-        .modal.open{visibility:visible;opacity:1}
-        .modal-panel{width:min(520px,94%);background:var(--card);padding:22px;border-radius:16px}
-        .modal-panel h3{margin:0 0 16px 0;font-size:22px}
-        .modal-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
-        .trade-input {width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; margin-top: 8px;}
-        .trade-info {margin-top: 10px; font-size: 14px; color: var(--muted);}
-        .modal-actions {display:flex;justify-content:flex-end;gap:12px;margin-top:20px}
-        .range{width:60%}
-        select{padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)}
-        footer{display:flex;justify-content:center;color:var(--muted);font-size:13px;padding:6px}
-        @media(max-width:980px){main{grid-template-columns:1fr;}}
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="img/YarikCoin.png" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" />
 </head>
 <body>
 <div class="container">
     <header>
         <div class="brand">
-            <img src="img/YarikCoin.png" alt="YarikCoin">
+            <img src="img/YarikCoin.png" alt="YarikCoin" title="YarikCoin" />
             <div>
                 <h1 data-i18n="brand.title">YarikCoin</h1>
-                <div class="small-muted" data-i18n="brand.subtitle">Version 2.0</div>
+                <div class="subtitle" data-i18n="brand.subtitle">Version 2.0</div>
             </div>
         </div>
-        <div id="settingsBtn" aria-label="Open settings">
-            <img src="img/settings-img.png" alt="settings" style="width:30px;height:30px">
-        </div>
+        <div id="settingsBtn" aria-label="Open settings"><img src="img/settings-img.png" alt="settings" /></div>
     </header>
+
     <main>
         <section class="left">
             <div class="card">
-                <div class="title-wrap">
-                    <img class="titleYarikCoin" src="img/YarikCoin.png" alt="YarikCoin">
+                <div id="title-wrap">
+                    <img class="titleYarikCoin" src="img/YarikCoin.png" alt="YarikCoin" title="YarikCoin" />
+                    <h1 style="margin:0px 0px 15px 0px; font-size: 30px" data-i18n="title.main">YarikCoin</h1>
                     <div>
-                        <h2 style="margin:0" data-i18n="title.main">YarikCoin</h2>
                         <div class="price-row">
-                            <div class="small-muted" data-i18n="price.label">Price:</div>
-                            <div id="price" class="price-value">0.00000$</div>
+                            <div style="font-size: 28px" data-i18n="price.label">Price:</div>
+                            <div id="price" class="price-value">0$</div>
                         </div>
                     </div>
                 </div>
             </div>
+
             <div class="card shop">
                 <div style="display:flex;align-items:center;justify-content:space-between">
-                    <div style="font-size:22px;font-weight:700" data-i18n="shop.label">Shop:</div>
+                    <div id="shop-title" data-i18n="shop.label">Shop:</div>
                     <div class="small-muted" data-i18n="shop.hint">Use balance to buy and sell</div>
                 </div>
-                <div class="shop-actions">
+                <div class="shop-actions" style="margin-top:10px">
                     <button type="button" id="buyBtn" class="btn btn-buy" data-i18n="button.buy">Buy</button>
                     <button type="button" id="sellBtn" class="btn btn-sell" data-i18n="button.sell">Sell</button>
                 </div>
-                <div class="balance-row">
-                    <div class="small-muted" data-i18n="balance.label">Balance:</div>
-                    <div id="balance">0.00000$</div>
+                <div class="balance-row" style="margin-top:12px">
+                    <div data-i18n="balance.label">Balance:</div>
+                    <div id="balance">0$</div>
                 </div>
                 <div class="balance-row">
-                    <div class="small-muted" data-i18n="onbalance.label">YarikCoin on balance:</div>
+                    <div data-i18n="onbalance.label">YarikCoin on balance:</div>
                     <div id="onBalance">0</div>
                 </div>
             </div>
+
             <div class="card history">
-                <div style="display:flex;justify-content:space-between;align-items:center">
-                    <div style="font-size:22px;font-weight:700" data-i18n="history.label">History:</div>
-                    <div class="small-muted" data-i18n="history.release">Release date: April 21, 2025</div>
+                <div class="history-chart-title" data-i18n="history.before">Chart:</div>
+                <div style="display:flex;gap:12px;align-items:center;margin-top:8px">
+                    <div class="small-muted" style="font-weight:600" data-i18n="history.max_period">Max price in period:</div>
+                    <div id="maxPrice" style="font-weight:700"></div>
+                    <div style="margin-left:24px" class="small-muted" style="font-weight:600" data-i18n="history.min_period">Min price in period:</div>
+                    <div id="minPrice" style="font-weight:700"></div>
                 </div>
-                <div class="small-muted" data-i18n="history.start">Start price: 0.4$</div>
-                <div style="display:flex;gap:12px">
-                    <div class="small-muted" data-i18n="history.max">Max price:</div>
-                    <div id="maxPrice"></div>
-                    <div style="margin-left:12px" class="small-muted" data-i18n="history.min">Min price:</div>
-                    <div id="minPrice"></div>
+
+                <div class="controls-row">
+                    <div class="selector-group">
+                        <label data-i18n="chart.granularity">Granularity</label>
+                        <div class="granularity" id="granularity">
+                            <button type="button" class="gran-btn" data-gr="auto" data-i18n="gr.auto">Auto</button>
+                            <button type="button" class="gran-btn" data-gr="hour" data-i18n="gr.hour">Hour</button>
+                            <button type="button" class="gran-btn" data-gr="day" data-i18n="gr.day">Day</button>
+                            <button type="button" class="gran-btn" data-gr="month" data-i18n="gr.month">Month</button>
+                        </div>
+                    </div>
+                    <div class="selector-group">
+                        <label data-i18n="chart.type">Type</label>
+                        <div id="chartTypeSelector" class="chart-type-selector">
+                            <button type="button" class="chart-type-btn" data-type="filled" data-i18n="type.filled">Filled</button>
+                            <button type="button" class="chart-type-btn" data-type="line" data-i18n="type.line">Line</button>
+                            <button type="button" class="chart-type-btn" data-type="bar" data-i18n="type.bar">Bar</button>
+                        </div>
+                    </div>
+                    <div class="selector-group">
+                        <label data-i18n="chart.theme">Theme</label>
+                        <div id="chartThemeSelector" class="chart-theme-selector">
+                            <button type="button" class="chart-theme-btn" data-theme="green" data-i18n="theme.green">Green</button>
+                            <button type="button" class="chart-theme-btn" data-theme="blue" data-i18n="theme.blue">Blue</button>
+                            <button type="button" class="chart-theme-btn" data-theme="red" data-i18n="theme.red">Red</button>
+                            <button type="button" class="chart-theme-btn" data-theme="purple" data-i18n="theme.purple">Purple</button>
+                        </div>
+                    </div>
+                    <div class="selector-group">
+                        <label data-i18n="chart.options">Options</label>
+                        <div id="chartOptionsSelector" class="chart-options-selector">
+                            <button type="button" class="chart-option-btn" data-option="markers" data-i18n="options.markers">Maximal & Minimal Price</button>
+                            <button type="button" class="chart-option-btn" data-option="trades" data-i18n="options.trades">My Trades</button>
+                        </div>
+                    </div>
                 </div>
-                <div style="margin-top:8px;font-weight:700" data-i18n="history.before">Chart:</div>
-                <div class="time-period-selector" id="timeSelector">
-                    <button type="button" class="time-btn active" data-hours="24" data-i18n="period.24h">24h</button>
-                    <button type="button" class="time-btn" data-hours="168" data-i18n="period.1w">1w</button>
-                    <button type="button" class="time-btn" data-hours="720" data-i18n="period.1m">1m</button>
-                    <button type="button" class="time-btn" data-hours="8760" data-i18n="period.1y">1y</button>
-                    <button type="button" class="time-btn" data-hours="17520" data-i18n="period.2y">2y</button>
-                    <button type="button" class="time-btn" data-hours="26280" data-i18n="period.3y">3y</button>
-                    <button type="button" class="time-btn" data-hours="43800" data-i18n="period.5y">5y</button>
-                    <button type="button" class="time-btn" data-hours="999999" data-i18n="period.all">All</button>
+
+                <div class="selector-group">
+                    <label data-i18n="chart.period">Period</label>
+                    <div style="display:flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <div class="arrows">
+                            <button type="button" id="prevPeriodBtn" class="time-btn">◀◀</button>
+                            <button type="button" id="prevRangeBtn" class="time-btn">◀</button>
+                        </div>
+                        <div id="timeSelector" class="time-period-selector">
+                            <button type="button" class="time-btn" data-hours="24" data-i18n="period.1d">1 day</button>
+                            <button type="button" class="time-btn" data-hours="168" data-i18n="period.1w">1 week</button>
+                            <button type="button" class="time-btn" data-hours="720" data-i18n="period.1m">1 month</button>
+                            <button type="button" class="time-btn" data-hours="8760" data-i18n="period.1y">1 year</button>
+                            <button type="button" class="time-btn" data-hours="999999" data-i18n="period.all">All time</button>
+                        </div>
+                        <div class="arrows">
+                            <button type="button" id="nextRangeBtn" class="time-btn">▶</button>
+                            <button type="button" id="nextPeriodBtn" class="time-btn">▶▶</button>
+                        </div>
+
+                        <div id="periodChange" style="margin-left:16px;font-weight:700"></div>
+                    </div>
                 </div>
-                <div style="margin-top:12px" id="chartContainer"><canvas id="priceChart" height="220"></canvas></div>
+
+                <div class="chart-wrap" style="margin-top:12px">
+                    <canvas id="priceChart" height="220"></canvas>
+                </div>
             </div>
         </section>
+
+        <aside class="right">
+            <div class="card">
+                <div class="card-title-row">
+                    <div style="font-weight:700; font-size:16px" data-i18n="transactions.title">Transactions</div>
+                    <button id="clearTxBtn" class="btn btn-sm" data-i18n="button.clear">Clear</button>
+                </div>
+                <div class="small-muted" data-i18n="transactions.hint">Your buy/sell history</div>
+                <div class="transactions" id="txList" style="margin-top:10px"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title-row">
+                    <div style="font-weight:700; font-size:16px" data-i18n="orders.title">Orders</div>
+                    <button id="cancelAllOrders" class="btn btn-sm" data-i18n="button.cancelAll">Cancel all</button>
+                </div>
+                <div style="margin-top:8px">
+                    <label data-i18n="orders.type">Type</label>
+                    <div id="orderTypeSelector" class="order-type-selector">
+                        <button type="button" class="btn btn-buy" data-type="buy"></button>
+                        <button type="button" class="btn btn-sell" data-type="sell"></button>
+                    </div>
+                    <label for="orderAmount" style="margin-top:8px" data-i18n="orders.amount">Amount</label>
+                    <input id="orderAmount" type="number" step="any" placeholder="0.00000" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ccc" />
+                    <label for="orderPrice" style="margin-top:8px" data-i18n="orders.price">Price (per coin)</label>
+                    <input id="orderPrice" type="number" step="any" placeholder="0.00000" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ccc" />
+                    <div style="display:flex;gap:8px;margin-top:10px"><button id="placeOrder" class="btn btn-buy" data-i18n="button.place">Place</button></div>
+                    <div class="orders" id="ordersList"></div>
+                </div>
+            </div>
+        </aside>
+
+        <aside class="miner">
+            <div class="card">
+                <div style="display:flex; align-items:center; flex-direction: column">
+                    <div>
+                        <button id="tabMiner" class="tab-btn" data-i18n="tab.miner">Miner</button>
+                        <button id="tabWork" class="tab-btn" data-i18n="tab.work">Job</button>
+                    </div>
+                </div>
+
+                <div id="minerContent" style="margin-top:8px">
+                    <div style="font-weight:700; font-size:16px; text-align: center;" data-i18n="miner.title">Miner</div>
+                    <div class="small-muted" style="margin-top:6px; text-align: center;" data-i18n="miner.hint">Upgrade miner to start earning</div>
+                    <div id="minerInfo" style="margin-top:8px">
+                        <div data-i18n="miner.level">Level: <span id="minerLevel">0</span></div>
+                        <div data-i18n="miner.next_cost">Next level cost: <strong id="minerNextCost">25$</strong></div>
+                        <div style="margin-top:6px" data-i18n="miner.total">Total mined: <strong id="minerTotalMined">0</strong> YarikCoin</div>
+                        <div style="margin-top:6px" data-i18n="miner.avg">Average time per coin: <strong id="minerAvgTime">—</strong></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:10px">
+                        <button id="minerUpgrade" class="btn" data-i18n="button.upgrade">Upgrade</button>
+                        <button id="minerClaim" class="btn" data-i18n="button.claim">Claim</button>
+                    </div>
+                </div>
+
+                <div id="workContent" style="display:none;margin-top:10px">
+                    <div style="font-weight:700; font-size:16px; text-align: center;" data-i18n="work.title">Job</div>
+                    <div class="small-muted" id="workHint" style="margin-top:6px; text-align: center;"></div>
+                    <div id="jobDetails" style="margin-top:8px">
+                        <div data-i18n="work.current">Current job: <strong id="currentJob">None</strong></div>
+                        <div data-i18n="work.next">Next job: <strong id="nextJob">—</strong></div>
+                        <div data-i18n="work.accumulated">Accumulated salary: <strong id="accSalary">0$</strong></div>
+                        <div style="margin-top:6px" data-i18n="work.earn">Earn (per day / hour): <strong id="jobEarnings">0$ / 0$</strong></div>
+                    </div>
+                    <div style="margin-top:8px">
+                        <button id="hireNextJob" class="btn btn-buy" data-i18n="work.hire">Hire next job</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </main>
 </div>
 
-<div id="settingsModal" class="modal" role="dialog" aria-hidden="true">
-    <div class="modal-panel" role="document">
+<div id="notification-area" class="notification-area"></div>
+
+<!-- Settings modal -->
+<div id="settingsModal" class="modal" aria-hidden="true">
+    <div class="modal-panel" style="display: flex; align-items: center; flex-direction: column">
         <h3 data-i18n="settings.title">Settings</h3>
-        <div class="modal-row">
-            <div data-i18n="volume.label">Volume</div>
-            <input id="volumeControl" type="range" min="0" max="1" step="0.01" class="range">
+        <div style="margin-top:12px">
+            <label for="volumeControl" data-i18n="settings.volume">Volume</label>
+            <input id="volumeControl" type="range" min="0" max="1" step="0.01">
         </div>
-        <div class="modal-row">
-            <div data-i18n="language.label">Language:</div>
-            <select id="languageSelect">
-                <option value="en">English</option>
-                <option value="ru">Русский</option>
-            </select>
+        <div style="margin-top:18px; display: flex; align-items: center; flex-direction: column">
+            <label for="languageSelect" data-i18n="settings.language">Language</label>
+            <div style="margin-top: 6px" class="lang-switch" id="languageSwitch">
+                <button type="button" class="lang-btn" data-lang="en">English</button>
+                <button type="button" class="lang-btn" data-lang="ru">Русский</button>
+            </div>
         </div>
-        <div class="modal-actions">
-            <button type="button" id="closeSettingsBtn" class="btn" data-i18n="button.close">Close</button>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:18px">
+            <button id="closeSettings" class="btn" data-i18n="button.close">Close</button>
         </div>
     </div>
 </div>
 
-<div id="tradeModal" class="modal" role="dialog" aria-hidden="true">
-    <div class="modal-panel" role="document">
+<!-- Trade modal -->
+<div id="tradeModal" class="modal" aria-hidden="true">
+    <div class="modal-panel">
         <h3 id="tradeTitle">Trade</h3>
-        <div>
-            <label id="tradeLabel" for="tradeAmount">Amount</label>
-            <input type="number" id="tradeAmount" class="trade-input" placeholder="0.00000" min="0">
-            <div id="tradeInfo" class="trade-info"></div>
+        <div style="margin-top:8px">
+            <label id="tradeLabel">Amount</label>
+            <input id="tradeAmount" type="number" class="trade-input" placeholder="0" min="0" step="any">
+            <div id="tradeInfo" class="small-muted" style="margin-top:8px"></div>
         </div>
-        <div class="modal-actions">
-            <button type="button" id="cancelTradeBtn" class="btn" data-i18n="button.cancel">Cancel</button>
-            <button type="button" id="confirmTradeBtn" class="btn btn-buy">Confirm</button>
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
+            <button id="cancelTradeBtn" class="btn" data-i18n="button.cancel">Cancel</button>
+            <button id="confirmTradeBtn" class="btn btn-buy" data-i18n="button.confirm">Confirm</button>
         </div>
     </div>
 </div>
 
-<audio id="mainMusic" src="/audio/digit-all.mp3" type="audio/mpeg" loop></audio>
-<audio id="clickSound" src="/audio/clickSound.mp3" type="audio/mpeg"></audio>
+<!-- Audio -->
+<audio id="mainMusic" preload="auto" src="/audio/digit-all.mp3" type="audio/mpeg" loop></audio>
+<audio id="clickSound" preload="auto" src="/audio/clickSound.mp3" type="audio/mpeg"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script type="module">
-    import price from "./data/price.mjs";
-
-    // --- CONFIGURATION & CONSTANTS ---
-    const CONSTANTS = {
-        HOUR_OFFSET: 484788,
-        INITIAL_BALANCE: 100,
-        INITIAL_COIN_BALANCE: 0,
-        INITIAL_VOLUME: 0.2,
-        STORAGE_KEYS: {
-            balance: 'yarikcoin_balance',
-            coinBalance: 'yarikcoin_onBalance',
-            volume: 'yarikcoin_volume',
-            language: 'yarikcoin_lang'
-        }
-    };
-
-    // === MODIFIED TRANSLATIONS START ===
-    const translations = {
-        "brand.title":{en:"YarikCoin",ru:"YarikCoin"},"brand.subtitle":{en:"Simple demo coin",ru:"Демонстрационный проект"},"title.main":{en:"YarikCoin",ru:"YarikCoin"},"price.label":{en:"Price:",ru:"Цена:"},"shop.label":{en:"Shop:",ru:"Магазин:"},"shop.hint":{en:"Use balance to buy and sell",ru:"Используйте баланс для покупки и продажи"},"button.buy":{en:"Buy",ru:"Купить"},"button.sell":{en:"Sell",ru:"Продать"},"button.close":{en:"Close",ru:"Закрыть"},"button.cancel":{en:"Cancel",ru:"Отмена"},"balance.label":{en:"Balance:",ru:"Баланс:"},"onbalance.label":{en:"YarikCoin on balance:",ru:"YarikCoin на балансе:"},"history.label":{en:"History:",ru:"История:"},"history.release":{en:"Release date: April 21, 2025",ru:"Дата релиза: 21 апреля 2025"},"history.start":{en:"Start price: 0.4$",ru:"Стартовая цена: 0.4$"},"history.max":{en:"Max price:",ru:"Макс. цена:"},"history.min":{en:"Min price:",ru:"Мин. цена:"},"history.before":{en:"Chart:",ru:"График:"},
-        "period.24h":{en:"1 day",ru:"1 день"},
-        "period.1w":{en:"1 week",ru:"1 неделя"},
-        "period.1m":{en:"1 month",ru:"1 месяц"},
-        "period.1y":{en:"1 year",ru:"1 год"},
-        "period.2y":{en:"2 years",ru:"2 года"},
-        "period.3y":{en:"3 years",ru:"3 года"},
-        "period.5y":{en:"5 years",ru:"5 лет"},
-        "period.all":{en:"All",ru:"Всё время"},
-        "settings.title":{en:"Settings",ru:"Настройки"},"volume.label":{en:"Volume",ru:"Громкость"},"language.label":{en:"Language:",ru:"Язык:"},"trade.buy.title":{en:"Buy YarikCoin",ru:"Купить YarikCoin"},"trade.sell.title":{en:"Sell YarikCoin",ru:"Продать YarikCoin"},"trade.buy.label":{en:"Amount to buy:",ru:"Количество для покупки:"},"trade.sell.label":{en:"Amount to sell:",ru:"Количество для продажи:"},"trade.info.cost":{en:"Cost:",ru:"Стоимость:"},"trade.info.receive":{en:"You will receive:",ru:"Вы получите:"},"trade.info.max":{en:"Max:",ru:"Макс:"},"alert.invalid":{en:"Invalid number",ru:"Неверное число"},"alert.no_funds":{en:"Not enough funds",ru:"Недостаточно средств"},"alert.no_coins":{en:"Not enough YarikCoin",ru:"Недостаточно YarikCoin"},
-    };
-    // === MODIFIED TRANSLATIONS END ===
-
-    // --- DOM ELEMENTS ---
-    const DOM = {
-        price: document.getElementById('price'),
-        balance: document.getElementById('balance'),
-        onBalance: document.getElementById('onBalance'),
-        maxPrice: document.getElementById('maxPrice'),
-        minPrice: document.getElementById('minPrice'),
-        priceChartCanvas: document.getElementById('priceChart'),
-        timeSelector: document.getElementById('timeSelector'),
-        buyBtn: document.getElementById('buyBtn'),
-        sellBtn: document.getElementById('sellBtn'),
-        settingsBtn: document.getElementById('settingsBtn'),
-        settingsModal: document.getElementById('settingsModal'),
-        closeSettingsBtn: document.getElementById('closeSettingsBtn'),
-        languageSelect: document.getElementById('languageSelect'),
-        volumeControl: document.getElementById('volumeControl'),
-        tradeModal: document.getElementById('tradeModal'),
-        tradeTitle: document.getElementById('tradeTitle'),
-        tradeLabel: document.getElementById('tradeLabel'),
-        tradeAmount: document.getElementById('tradeAmount'),
-        tradeInfo: document.getElementById('tradeInfo'),
-        confirmTradeBtn: document.getElementById('confirmTradeBtn'),
-        cancelTradeBtn: document.getElementById('cancelTradeBtn'),
-        mainMusic: document.getElementById('mainMusic'),
-        clickSound: document.getElementById('clickSound'),
-    };
-
-    // --- STATE MANAGEMENT ---
-    const state = {
-        currentPrice: 0, balance: 0, coinBalance: 0,
-        currentLang: 'en', chart: null, audioInitialized: false,
-        trade: { type: '', amount: 0 }
-    };
-
-    // --- UTILITY FUNCTIONS ---
-    const formatCurrency = (value) => `${Number(value).toFixed(5)}$`;
-    const getStoredValue = (key, defaultValue) => localStorage.getItem(key) ?? defaultValue;
-    const playClickSound = () => { DOM.clickSound.currentTime = 0; DOM.clickSound.play(); };
-
-    // --- TRANSLATION ---
-    function applyTranslations(lang) {
-        state.currentLang = lang;
-        document.documentElement.lang = lang;
-        document.querySelectorAll('[data-i18n]').forEach(el => {
-            const key = el.getAttribute('data-i18n');
-            const translation = translations[key];
-            if (translation) {
-                el.innerText = translation[lang] ?? translation.en;
-            }
-        });
-    }
-
-    // --- UI UPDATE FUNCTIONS ---
-    function updateBalanceUI() {
-        DOM.balance.innerText = formatCurrency(state.balance);
-        DOM.onBalance.innerText = Number(state.coinBalance.toFixed(5));
-        DOM.buyBtn.disabled = state.balance <= 0;
-        DOM.sellBtn.disabled = state.coinBalance <= 0;
-    }
-
-    // --- MODAL HANDLING ---
-    function openModal(modalElement) {
-        if (!state.audioInitialized) ensureAudio();
-        modalElement.classList.add('open');
-        modalElement.setAttribute('aria-hidden', 'false');
-    }
-
-    function closeModal(modalElement) {
-        modalElement.classList.remove('open');
-        modalElement.setAttribute('aria-hidden', 'true');
-    }
-
-    // --- AUDIO HANDLING ---
-    function ensureAudio() {
-        if (state.audioInitialized) return;
-        const playPromise = DOM.mainMusic.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => state.audioInitialized = true)
-                .catch(() => state.audioInitialized = false);
-        }
-    }
-
-    function setVolume(volume) {
-        DOM.mainMusic.volume = volume;
-        localStorage.setItem(CONSTANTS.STORAGE_KEYS.volume, volume);
-    }
-
-    // --- CHARTING ---
-    function getChartData(hours) {
-        const currentHour = Math.floor(Date.now() / 3600000 - CONSTANTS.HOUR_OFFSET);
-        const start = Math.max(0, currentHour - hours);
-        const labels = [];
-        const dataPoints = [];
-        for (let i = start; i <= currentHour; i++) {
-            const d = new Date(Date.now() - ((currentHour - i) * 3600000));
-            if(hours <= 48) labels.push(d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
-            else if (hours <= 24 * 60) labels.push(d.toLocaleDateString([], {day: '2-digit', month: 'short'}));
-            else labels.push(d.toLocaleDateString([], {month: 'short', year: 'numeric'}));
-            dataPoints.push(price[i] ?? 0);
-        }
-        return { labels, dataPoints };
-    }
-
-    function renderChart(hours) {
-        const { labels, dataPoints } = getChartData(hours);
-        if (state.chart) {
-            state.chart.data.labels = labels;
-            state.chart.data.datasets[0].data = dataPoints;
-            state.chart.update();
-            return;
-        }
-        const ctx = DOM.priceChartCanvas.getContext('2d');
-        state.chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Price', data: dataPoints, fill: true, tension: 0.2, borderWidth: 2,
-                    borderColor: '#2e7d32', backgroundColor: 'rgba(46,125,50,0.12)', pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { x: { display: true }, y: { ticks: { callback: (v) => formatCurrency(v) } } },
-                plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } }
-            }
-        });
-    }
-
-    // --- TRADING LOGIC ---
-    function openTradeModal(type) {
-        state.trade.type = type;
-        const isBuy = type === 'buy';
-
-        DOM.tradeTitle.innerText = translations[isBuy ? 'trade.buy.title' : 'trade.sell.title'][state.currentLang];
-        DOM.tradeLabel.innerText = translations[isBuy ? 'trade.buy.label' : 'trade.sell.label'][state.currentLang];
-        DOM.confirmTradeBtn.className = `btn ${isBuy ? 'btn-buy' : 'btn-sell'}`;
-        DOM.confirmTradeBtn.innerText = translations[isBuy ? 'button.buy' : 'button.sell'][state.currentLang];
-
-        DOM.tradeAmount.value = '';
-        DOM.tradeInfo.innerText = '';
-        updateTradeInfo();
-
-        openModal(DOM.tradeModal);
-        DOM.tradeAmount.focus();
-    }
-
-    function updateTradeInfo() {
-        const amount = parseFloat(DOM.tradeAmount.value);
-        if (isNaN(amount) || amount <= 0) {
-            DOM.tradeInfo.innerText = '';
-            return;
-        }
-
-        if (state.trade.type === 'buy') {
-            const cost = amount * state.currentPrice;
-            const maxCanBuy = state.balance / state.currentPrice;
-            DOM.tradeInfo.innerHTML = `${translations['trade.info.cost'][state.currentLang]} ${formatCurrency(cost)}<br>
-                                     ${translations['trade.info.max'][state.currentLang]} ${maxCanBuy.toFixed(5)}`;
-        } else {
-            const gain = amount * state.currentPrice;
-            DOM.tradeInfo.innerHTML = `${translations['trade.info.receive'][state.currentLang]} ${formatCurrency(gain)}<br>
-                                     ${translations['trade.info.max'][state.currentLang]} ${state.coinBalance.toFixed(5)}`;
-        }
-    }
-
-    function executeTrade() {
-        const amount = parseFloat(DOM.tradeAmount.value);
-        if (isNaN(amount) || amount <= 0) {
-            alert(translations['alert.invalid'][state.currentLang]);
-            return;
-        }
-
-        if (state.trade.type === 'buy') {
-            const cost = amount * state.currentPrice;
-            if (cost > state.balance) {
-                alert(translations['alert.no_funds'][state.currentLang]);
-                return;
-            }
-            state.balance -= cost;
-            state.coinBalance += amount;
-        } else {
-            if (amount > state.coinBalance) {
-                alert(translations['alert.no_coins'][state.currentLang]);
-                return;
-            }
-            state.balance += (amount * state.currentPrice);
-            state.coinBalance -= amount;
-        }
-
-        localStorage.setItem(CONSTANTS.STORAGE_KEYS.balance, state.balance);
-        localStorage.setItem(CONSTANTS.STORAGE_KEYS.coinBalance, state.coinBalance);
-
-        updateBalanceUI();
-        closeModal(DOM.tradeModal);
-    }
-
-    // --- INITIALIZATION ---
-    function init() {
-        const savedLang = getStoredValue(CONSTANTS.STORAGE_KEYS.language, 'en');
-        DOM.languageSelect.value = savedLang;
-        applyTranslations(savedLang);
-
-        const currentHour = Math.floor(Date.now() / 3600000 - CONSTANTS.HOUR_OFFSET);
-        state.currentPrice = price[currentHour] ?? 0;
-        DOM.price.innerText = formatCurrency(state.currentPrice);
-
-        let maxP = 0, minP = price[0] ?? 0;
-        for (let i = 1; i <= currentHour; i++) {
-            if (price[i] > maxP) maxP = price[i];
-            if (price[i] < minP) minP = price[i];
-        }
-        DOM.maxPrice.innerText = formatCurrency(maxP);
-        DOM.minPrice.innerText = formatCurrency(minP);
-
-        state.balance = parseFloat(getStoredValue(CONSTANTS.STORAGE_KEYS.balance, CONSTANTS.INITIAL_BALANCE));
-        state.coinBalance = parseFloat(getStoredValue(CONSTANTS.STORAGE_KEYS.coinBalance, CONSTANTS.INITIAL_COIN_BALANCE));
-        updateBalanceUI();
-
-        DOM.clickSound.load();
-        const savedVolume = getStoredValue(CONSTANTS.STORAGE_KEYS.volume, CONSTANTS.INITIAL_VOLUME);
-        DOM.volumeControl.value = savedVolume;
-        setVolume(savedVolume);
-
-        // === MODIFIED INITIAL CHART RENDER ===
-        renderChart(24);
-
-        document.addEventListener('click', function onceInitAudio() {
-            ensureAudio();
-            document.removeEventListener('click', onceInitAudio);
-        });
-
-        DOM.settingsBtn.addEventListener('click', () => { playClickSound(); openModal(DOM.settingsModal); });
-        DOM.closeSettingsBtn.addEventListener('click', () => { playClickSound(); closeModal(DOM.settingsModal); });
-        DOM.settingsModal.addEventListener('click', e => { if (e.target === DOM.settingsModal) closeModal(DOM.settingsModal); });
-
-        DOM.buyBtn.addEventListener('click', () => { playClickSound(); openTradeModal('buy'); });
-        DOM.sellBtn.addEventListener('click', () => { playClickSound(); openTradeModal('sell'); });
-        DOM.tradeModal.addEventListener('click', e => { if (e.target === DOM.tradeModal) closeModal(DOM.tradeModal); });
-        DOM.confirmTradeBtn.addEventListener('click', executeTrade);
-        DOM.cancelTradeBtn.addEventListener('click', () => closeModal(DOM.tradeModal));
-        DOM.tradeAmount.addEventListener('input', updateTradeInfo);
-
-        DOM.languageSelect.addEventListener('change', e => {
-            applyTranslations(e.target.value);
-            localStorage.setItem(CONSTANTS.STORAGE_KEYS.language, e.target.value);
-        });
-
-        DOM.volumeControl.addEventListener('input', e => setVolume(e.target.value));
-
-        DOM.timeSelector.addEventListener('click', e => {
-            if (e.target.classList.contains('time-btn')) {
-                DOM.timeSelector.querySelector('.active').classList.remove('active');
-                e.target.classList.add('active');
-                renderChart(parseInt(e.target.dataset.hours));
-            }
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', init);
-</script>
+<script src="script.mjs" type="module"></script>
 </body>
 </html>

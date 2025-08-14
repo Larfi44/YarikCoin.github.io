@@ -1,503 +1,536 @@
-/* ====================================================================
-   VARIABLES & GLOBAL STYLES
-   ==================================================================== */
 :root {
-  --bg: linear-gradient(180deg, #b1fafa, #f6fff9);
-  --card: rgba(255, 255, 255, 0.95);
-  --accent: #2e7d32;
-  --danger: #c62828;
-  --glass: rgba(255, 255, 255, 0.6);
-  --muted: #56626a;
-  --radius: 14px;
-  --shadow: 0 6px 20px rgba(11, 23, 32, 0.06);
+    --bg: linear-gradient(180deg, #b1fafa, #f6fff9);
+    --card: rgba(255, 255, 255, 0.95);
+    --accent: #2e7d32;
+    --danger: #c62828;
+    --glass: rgba(255, 255, 255, 0.6);
+    --muted: #56626a;
+    --radius: 14px;
+    --shadow: 0 6px 20px rgba(11, 23, 32, 0.06);
 }
 
 *,
-*:before,
-*:after {
-  box-sizing: inherit;
+:before,
+:after {
+    box-sizing: border-box
 }
 
 html {
-  box-sizing: border-box;
+    box-sizing: border-box
 }
 
 body {
-  height: 100%;
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background: var(--bg);
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 28px;
-  color: #0b1720;
+    height: 100%;
+    margin: 0;
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 28px;
+    color: #0b1720
 }
 
-/* ====================================================================
-   LAYOUT
-   ==================================================================== */
 .container {
-  width: 100%;
-  max-width: 1400px;
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px
 }
 
 main {
-  display: grid;
-  grid-template-columns: 2fr 280px 280px;
-  gap: 24px;
-  align-items: flex-start;
+    display: grid;
+    grid-template-columns: 2fr 280px 280px;
+    gap: 24px;
+    align-items: flex-start
 }
 
 .left,
 .right {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px
 }
 
-/* ====================================================================
-   HEADER
-   ==================================================================== */
 header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between
 }
 
 .brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px
 }
 
 .brand img {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px
 }
 
 .brand h1 {
-  margin: 0;
-  font-size: 22px;
+    margin: 0;
+    font-size: 22px
 }
 
 .brand .subtitle {
-  color: var(--muted);
-  font-size: 13px;
+    color: var(--muted);
+    font-size: 13px
 }
 
-/* ====================================================================
-   CARDS
-   ==================================================================== */
 .card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow);
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    box-shadow: var(--shadow);
+    position: relative
 }
 
 .card.history {
-  margin-bottom: 12px;
+    margin-bottom: 12px
 }
 
 .card-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px
 }
 
-/* ====================================================================
-   BUTTONS & CONTROLS
-   ==================================================================== */
 .btn {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(2, 8, 10, 0.06);
-  transition: all .18s;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(2, 8, 10, 0.06);
+    transition: all .18s
 }
 
 .btn:hover {
-  transform: translateY(-1px);
+    transform: translateY(-1px)
 }
 
 .btn-sm {
-  padding: 4px 10px;
-  font-size: 12px;
+    padding: 4px 10px;
+    font-size: 12px
 }
 
 .btn-buy {
-  background: linear-gradient(135deg, #4caf50, #2e7d32);
-  color: #fff;
+    background: linear-gradient(135deg, #4caf50, #2e7d32);
+    color: #fff
 }
 
 .btn-sell {
-  background: linear-gradient(135deg, #f44336, #c62828);
-  color: #fff;
+    background: linear-gradient(135deg, #f44336, #c62828);
+    color: #fff
 }
 
 #settingsBtn {
-  width: 48px;
-  height: 48px;
-  border-radius: 10px;
-  background: var(--glass);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: transform .18s;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background: var(--glass);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    transition: transform .18s
 }
 
 #settingsBtn img {
-  width: 22px;
-  height: 22px;
+    width: 22px;
+    height: 22px
 }
 
-/* ====================================================================
-   CHART & GRAPH
-   ==================================================================== */
 .history-chart-title {
-  font-size: 23px;
-  font-weight: 700;
+    font-size: 23px;
+    font-weight: 700;
+    text-align: center
 }
 
 .chart-wrap {
-  width: 100%;
-  padding-bottom: 16px;
+    width: 100%;
+    padding-bottom: 16px
 }
 
 canvas {
-  width: 100% !important;
-  max-height: 420px;
-  height: 360px !important;
-  display: block;
+    width: 100% !important;
+    max-height: 420px;
+    height: 360px !important;
+    display: block
 }
 
 .controls-row {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-  margin-top: 10px;
-  flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center
 }
 
 .selector-group {
-  margin-top: 12px;
+    margin-top: 6px;
+    text-align: center;
+    padding: 6px 0;
+    width: 100%
 }
 
 .time-period-selector {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center
 }
 
 .time-btn {
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #fff;
-  cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fff;
+    cursor: pointer
 }
 
 .time-btn.active {
-  background: var(--accent);
-  color: #fff;
-  border-color: transparent;
+    background: var(--accent);
+    color: #fff;
+    border-color: transparent
 }
 
 .arrows {
-  display: flex;
-  gap: 6px;
+    display: flex;
+    gap: 6px;
+    align-items: center
 }
 
 .granularity,
 .chart-type-selector,
 .chart-theme-selector,
 .chart-options-selector {
-  display: flex;
-  gap: 8px;
-  align-items: center;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap
 }
 
 .gran-btn,
 .chart-type-btn,
 .chart-theme-btn,
 .chart-option-btn {
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: #fff;
-  cursor: pointer;
-  font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px
 }
 
 .gran-btn.active,
 .chart-type-btn.active,
 .chart-theme-btn.active,
 .chart-option-btn.active {
-  background: #111;
-  color: #fff;
+    background: #111;
+    color: #fff
 }
 
 .gran-btn[disabled] {
-  opacity: 0.5;
-  cursor: not-allowed;
+    opacity: 0.5;
+    cursor: not-allowed
 }
 
-/* ====================================================================
-   MODAL WINDOWS
-   ==================================================================== */
 .modal {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  z-index: 130;
-  backdrop-filter: blur(6px);
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity .18s, visibility .18s;
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 130;
+    backdrop-filter: blur(6px);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .18s, visibility .18s
 }
 
 .modal.open {
-  visibility: visible;
-  opacity: 1;
+    visibility: visible;
+    opacity: 1
 }
 
 .modal-panel {
-  width: min(760px, 94%);
-  background: var(--card);
-  padding: 18px;
-  border-radius: 12px;
+    width: min(760px, 94%);
+    background: var(--card);
+    padding: 18px;
+    border-radius: 12px;
+    position: relative
 }
 
-/* ====================================================================
-   NOTIFICATIONS
-   ==================================================================== */
+#closeSettings {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px
+}
+
 .notification-area {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
 
 .notification {
-  background: rgba(11, 23, 32, 0.9);
-  color: #fff;
-  padding: 12px 16px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  transform: translateX(100%);
-  animation: slideIn 0.5s forwards;
+    background: rgba(11, 23, 32, 0.9);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideIn 0.5s forwards
 }
 
-/* ====================================================================
-   SPECIFIC COMPONENTS (WORK, ORDERS, ETC.)
-   ==================================================================== */
 #title-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%
 }
 
 #title-wrap img {
-  width: 90px;
+    width: 90px
 }
 
 .price-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px
 }
 
 .price-value {
-  font-size: 26px;
-  font-weight: 700;
+    font-size: 26px;
+    font-weight: 700
 }
 
 .small-muted {
-  color: var(--muted);
-  font-size: 13px;
+    color: var(--muted);
+    font-size: 13px
 }
 
 .normal-muted {
-  color: var(--muted);
-  font-size: 20px;
+    color: var(--muted);
+    font-size: 20px
 }
 
 #shop-title {
-  font-size: 23px;
-  font-weight: 0700;
+    font-size: 23px;
+    font-weight: 700;
+    text-align: center
 }
 
 .shop-actions {
-  display: flex;
-  gap: 12px;
+    display: flex;
+    gap: 12px;
+    justify-content: center
 }
 
 .shop .btn {
-  padding: 14px 28px;
-  font-size: 16px;
+    padding: 14px 28px;
+    font-size: 16px
 }
 
 .balance-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center
 }
 
 .transactions,
 .orders {
-  max-height: 200px;
-  overflow: auto;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  padding-top: 8px;
+    max-height: 200px;
+    overflow: auto;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 8px
 }
 
 .tx-item,
 .order-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 6px;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
-  font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 6px;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.04);
+    font-size: 13px
 }
 
 .tx-item .type-buy {
-  color: green;
+    color: green
 }
 
 .tx-item .type-sell {
-  color: red;
+    color: red
 }
 
 .order-item .cancel-order-btn {
-  background: transparent;
-  border: none;
-  color: var(--danger);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 0 4px;
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 4px
 }
 
 .order-type-selector {
-  display: flex;
-  gap: 8px;
-  margin: 8px 0;
+    display: flex;
+    gap: 8px;
+    margin: 8px 0;
+    justify-content: center
 }
 
 .order-type-selector .btn {
-  flex: 1;
-  padding: 10px;
-  font-size: 14px;
-  opacity: 0.6;
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    opacity: 0.6;
+    max-width: 140px
 }
 
 .order-type-selector .btn.active {
-  opacity: 1;
+    opacity: 1
 }
 
 .order-type-selector .btn.btn-buy.active {
-  box-shadow: 0 0 0 2px var(--accent);
+    box-shadow: 0 0 0 2px var(--accent)
 }
 
 .order-type-selector .btn.btn-sell.active {
-  box-shadow: 0 0 0 2px var(--danger);
+    box-shadow: 0 0 0 2px var(--danger)
 }
 
 .lang-switch {
-  display: flex;
-  gap: 8px;
+    display: flex;
+    gap: 8px;
+    justify-content: center
 }
 
 .lang-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fff;
-  cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    background: #fff;
+    cursor: pointer
 }
 
 .lang-btn.active {
-  background: #111;
-  color: #fff;
+    background: #111;
+    color: #fff
 }
 
 .work-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px
 }
 
 .job-item {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 8px;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.02);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.02)
 }
 
-/* NEW TAB SWITCHER STYLES */
 .tab-switcher {
-  display: inline-flex;
-  background-color: rgba(0, 0, 0, 0.06);
-  border-radius: 10px;
-  padding: 3px;
+    display: inline-flex;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    padding: 3px
 }
 
 .tab-btn {
-  background: transparent;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease-in-out;
-  color: var(--muted);
-  font-size: 14px;
+    background: transparent;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .25s ease-in-out;
+    color: var(--muted);
+    font-size: 14px
 }
 
 .tab-btn.active {
-  background: black;
-  color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07);
+    background: black;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.07)
 }
 
+.yarik-note {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: var(--muted);
+    font-size: 13px
+}
 
-/* ====================================================================
-   ANIMATIONS & MEDIA QUERIES
-   ==================================================================== */
+.order-desc {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: left
+}
+
+.period-block {
+    position: relative;
+    margin-top: 28px;
+    margin-bottom: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center
+}
+
+.period-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 100%
+}
+
+.period-label {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 700
+}
+
 @keyframes slideIn {
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+    to {
+        opacity: 1;
+        transform: translateX(0)
+    }
 }
 
 @keyframes fadeOut {
-  to {
-    opacity: 0;
-  }
+    to {
+        opacity: 0
+    }
 }
 
-@media(max-width: 980px) {
-  main {
-    grid-template-columns: 1fr;
-  }
+@media(max-width:980px) {
+    main {
+        grid-template-columns: 1fr
+    }
 }

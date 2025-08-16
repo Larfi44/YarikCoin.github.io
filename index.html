@@ -4,7 +4,83 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>YarikCoin</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root{--bg:linear-gradient(180deg,#b1fafa,#f6fff9);--card:rgba(255,255,255,0.95);--accent:#2e7d32;--danger:#c62828;--glass:rgba(255,255,255,0.6);--muted:#56626a;--radius:14px;--shadow:0 6px 20px rgba(11,23,32,0.06)}
+        *,:before,:after{box-sizing:border-box}html{box-sizing:border-box}body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:28px;color:#0b1720}
+        .container{width:100%;max-width:1400px;display:flex;flex-direction:column;gap:26px}
+        main{display:grid;grid-template-columns:2fr 280px 280px;gap:24px;align-items:flex-start}
+        .left,.right{display:flex;flex-direction:column;gap:14px}
+        header{display:flex;align-items:center;justify-content:space-between}
+        .brand{display:flex;align-items:center;gap:12px}
+        .brand img{width:48px;height:48px;border-radius:10px}
+        .brand h1{margin:0;font-size:22px}
+        .brand .subtitle{color:var(--muted);font-size:13px}
+        .card{background:var(--card);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);position:relative}
+        .card.history{margin-bottom:12px}
+        .card-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .btn{padding:10px 16px;border-radius:10px;border:none;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(2,8,10,0.06);transition:all .18s}
+        .btn:hover{transform:translateY(-1px)}
+        .btn-sm{padding:4px 10px;font-size:12px}
+        .btn-buy{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff}
+        .btn-sell{background:linear-gradient(135deg,#f44336,#c62828);color:#fff}
+        #settingsBtn{width:48px;height:48px;border-radius:10px;background:var(--glass);display:grid;place-items:center;cursor:pointer;border:1px solid rgba(0,0,0,0.06);transition:transform .18s}
+        #settingsBtn img{width:22px;height:22px}
+        .history-chart-title{font-size:23px;font-weight:700;text-align:center}
+        .chart-wrap{width:100%;padding-bottom:16px}
+        canvas{width:100% !important;max-height:420px;height:360px !important;display:block}
+        .controls-row{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap;justify-content:center}
+        .selector-group{margin-top:6px;text-align:center;padding:6px 0;width:100%}
+        .time-period-selector{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+        .time-btn{padding:8px 10px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer}
+        .time-btn.active{background:var(--accent);color:#fff;border-color:transparent}
+        .arrows{display:flex;gap:6px;align-items:center}
+        .granularity,.chart-type-selector,.chart-theme-selector,.chart-options-selector{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+        .gran-btn,.chart-type-btn,.chart-theme-btn,.chart-option-btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#fff;cursor:pointer;font-size:13px}
+        .gran-btn.active,.chart-type-btn.active,.chart-theme-btn.active,.chart-option-btn.active{background:#111;color:#fff}
+        .gran-btn[disabled]{opacity:0.5;cursor:not-allowed}
+        .modal{position:fixed;inset:0;display:grid;place-items:center;z-index:130;backdrop-filter:blur(6px);visibility:hidden;opacity:0;transition:opacity .18s,visibility .18s}
+        .modal.open{visibility:visible;opacity:1}
+        .modal-panel{width:min(760px,94%);background:var(--card);padding:18px;border-radius:12px;position:relative}
+        #closeSettings{position:absolute;top:10px;right:10px;padding:6px 10px}
+        .notification-area{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px}
+        .notification{background:rgba(11,23,32,0.9);color:#fff;padding:12px 16px;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.2);opacity:0;transform:translateX(100%);animation:slideIn 0.5s forwards}
+        #title-wrap{display:flex;flex-direction:column;align-items:center;width:100%}
+        #title-wrap img{width:90px}
+        .price-row{display:flex;align-items:center;gap:10px}
+        .price-value{font-size:26px;font-weight:700}
+        .small-muted{color:var(--muted);font-size:13px}
+        .normal-muted{color:var(--muted);font-size:20px}
+        #shop-title{font-size:23px;font-weight:700;text-align:center}
+        .shop-actions{display:flex;gap:12px;justify-content:center}
+        .shop .btn{padding:14px 28px;font-size:16px}
+        .balance-row{display:flex;gap:10px;align-items:center;justify-content:center}
+        .transactions,.orders{max-height:200px;overflow:auto;border-top:1px solid rgba(0,0,0,0.05);padding-top:8px}
+        .tx-item,.order-item{display:flex;justify-content:space-between;align-items:center;padding:8px 6px;border-bottom:1px dashed rgba(0,0,0,0.04);font-size:13px}
+        .tx-item .type-buy{color:green}
+        .tx-item .type-sell{color:red}
+        .order-item .cancel-order-btn{background:transparent;border:none;color:var(--danger);font-size:18px;cursor:pointer;padding:0 4px}
+        .order-type-selector{display:flex;gap:8px;margin:8px 0;justify-content:center}
+        .order-type-selector .btn{flex:1;padding:10px;font-size:14px;opacity:0.6;max-width:140px}
+        .order-type-selector .btn.active{opacity:1}
+        .order-type-selector .btn.btn-buy.active{box-shadow:0 0 0 2px var(--accent)}
+        .order-type-selector .btn.btn-sell.active{box-shadow:0 0 0 2px var(--danger)}
+        .lang-switch{display:flex;gap:8px;justify-content:center}
+        .lang-btn{padding:8px 12px;border-radius:8px;border:1px solid rgba(0,0,0,0.08);background:#fff;cursor:pointer}
+        .lang-btn.active{background:#111;color:#fff}
+        .work-grid{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+        .job-item{display:flex;justify-content:space-between;gap:12px;padding:8px;border-radius:8px;background:rgba(0,0,0,0.02)}
+        .tab-switcher{display:inline-flex;background-color:rgba(0,0,0,0.06);border-radius:10px;padding:3px}
+        .tab-btn{background:transparent;border:none;padding:6px 14px;border-radius:8px;font-weight:600;cursor:pointer;transition:all .25s ease-in-out;color:var(--muted);font-size:14px}
+        .tab-btn.active{background:black;color:white;box-shadow:0 2px 5px rgba(0,0,0,0.07)}
+        .yarik-note{position:absolute;top:12px;right:12px;color:var(--muted);font-size:13px}
+        .order-desc{margin-top:6px;color:var(--muted);font-size:13px;text-align:left}
+        .period-block{position:relative;margin-top:28px;margin-bottom:6px;display:flex;flex-direction:column;align-items:center} /* увеличенный отступ между опциями и Period */
+        .period-row{display:flex;gap:8px;align-items:center;justify-content:center;width:100%}
+        .period-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-weight:700}
+        @keyframes slideIn{to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeOut{to{opacity:0}}
+        @media(max-width:980px){main{grid-template-columns:1fr}}
+    </style>
     <link rel="icon" href="img/YarikCoin.png" />
 </head>
 <body>
@@ -271,6 +347,717 @@
 <audio id="clickSound" preload="auto" src="/audio/clickSound.mp3" type="audio/mpeg"></audio>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="script.js" type="module"></script>
+<script type="module">
+    import price from './data/price.mjs';
+
+    /* storage keys */
+    const STORAGE_KEYS = {
+        balance:'yarikcoin_balance', coinBalance:'yarikcoin_onBalance', volume:'yarikcoin_volume',
+        language:'yarikcoin_lang', tx:'yarikcoin_tx', orders:'yarikcoin_orders', lastHour:'yarikcoin_last_hour',
+        minerLevel:'yarikcoin_miner_level', minerTotal:'yarikcoin_miner_total', minerLastSeen:'yarikcoin_miner_lastseen', minerFrac:'yarikcoin_miner_frac',
+        chartHours:'yarikcoin_chart_hours', chartGranularity:'yarikcoin_chart_granularity', chartType:'yarikcoin_chart_type',
+        chartTheme:'yarikcoin_chart_theme', showMarkers:'yarikcoin_show_markers', showTrades:'yarikcoin_show_trades',
+        activeTab:'yarikcoin_active_tab', currentJob:'yarikcoin_current_job', jobAccum:'yarikcoin_job_accum', jobLastSeen:'yarikcoin_job_lastseen'
+    };
+
+    const DOM = {
+        price:document.getElementById('price'), balance:document.getElementById('balance'), onBalance:document.getElementById('onBalance'),
+        maxPrice:document.getElementById('maxPrice'), minPrice:document.getElementById('minPrice'),
+        priceChartCanvas:document.getElementById('priceChart'), timeSelector:document.getElementById('timeSelector'),
+        buyBtn:document.getElementById('buyBtn'), sellBtn:document.getElementById('sellBtn'),
+        tradeModal:document.getElementById('tradeModal'), tradeTitle:document.getElementById('tradeTitle'), tradeLabel:document.getElementById('tradeLabel'),
+        tradeAmount:document.getElementById('tradeAmount'), tradeInfo:document.getElementById('tradeInfo'),
+        confirmTradeBtn:document.getElementById('confirmTradeBtn'), cancelTradeBtn:document.getElementById('cancelTradeBtn'),
+        mainMusic:document.getElementById('mainMusic'), clickSound:document.getElementById('clickSound'),
+        settingsBtn:document.getElementById('settingsBtn'), settingsModal:document.getElementById('settingsModal'), closeSettings:document.getElementById('closeSettings'),
+        volumeControl:document.getElementById('volumeControl'), languageSwitch:document.getElementById('languageSwitch'),
+        granularity:document.getElementById('granularity'), prevRangeBtn:document.getElementById('prevRangeBtn'), nextRangeBtn:document.getElementById('nextRangeBtn'),
+        prevPeriodBtn:document.getElementById('prevPeriodBtn'), nextPeriodBtn:document.getElementById('nextPeriodBtn'),
+        txList:document.getElementById('txList'), ordersList:document.getElementById('ordersList'),
+        placeOrder:document.getElementById('placeOrder'), orderAmount:document.getElementById('orderAmount'), orderPrice:document.getElementById('orderPrice'),
+        cancelAllOrders:document.getElementById('cancelAllOrders'),
+        minerLevel:document.getElementById('minerLevel'), minerTotalMined:document.getElementById('minerTotalMined'), minerAvgTime:document.getElementById('minerAvgTime'),
+        minerUpgrade:document.getElementById('minerUpgrade'), minerClaim:document.getElementById('minerClaim'),
+        orderTypeSelector:document.getElementById('orderTypeSelector'), notificationArea:document.getElementById('notification-area'),
+        clearTxBtn:document.getElementById('clearTxBtn'),
+        chartTypeSelector:document.getElementById('chartTypeSelector'), chartThemeSelector:document.getElementById('chartThemeSelector'),
+        chartOptionsSelector:document.getElementById('chartOptionsSelector'), periodChange:document.getElementById('periodChange'),
+        minerContent:document.getElementById('minerContent'), workContent:document.getElementById('workContent'),
+        tabMiner:document.getElementById('tabMiner'), tabWork:document.getElementById('tabWork'),
+        hireNextJob:document.getElementById('hireNextJob'), currentJob:document.getElementById('currentJob'), nextJob:document.getElementById('nextJob'),
+        accSalary:document.getElementById('accSalary'), jobEarnings:document.getElementById('jobEarnings'), workHint:document.getElementById('workHint'),
+        claimJob:document.getElementById('claimJob'), yarikNote:document.getElementById('yarik-note'), shopTitle:document.getElementById('shop-title'),
+        orderDesc:document.getElementById('orderDesc'), supportBtn:document.getElementById('supportBtn'),
+        minerChanceVal:document.getElementById('minerChanceVal'), minerTotalUsd:document.getElementById('minerTotalUsd')
+    };
+
+    /* locales */
+    const LOCALES = {
+        en: { buy:'Buy', sell:'Sell', close:'Close', cancel:'Cancel', place:'Place', cancelAll:'Cancel all', noOrders:'No orders',
+            invalidOrderData:'Invalid order data', buyPriceLow:'Buy price must be lower than current price', sellPriceHigh:'Sell price must be higher than current price',
+            clear:'Clear', confirm:'Confirm', upgrade:'Upgrade', claim:'Claim', period:'Period', granularity:'Granularity', notEnoughFunds:'Not enough funds',
+            notEnoughYarikCoin:'Not enough YarikCoin', confirmClearTx:'Are you sure you want to clear all transactions?', type:'Type', theme:'Theme',
+            line:'Line', bar:'Bar', filled:'Filled', filled_solid:'Fully filled', options:'Options', markers:'Maximal & Minimal Price', trades:'My Trades',
+            for:'for', received:'received', green:'Green', blue:'Blue', red:'Red', purple:'Purple', black:'Black', gr_auto:'Auto', gr_hour:'Hour',
+            gr_day:'Day', gr_month:'Month', p_1d:'1 day', p_1w:'1 week', p_1m:'1 month', p_1y:'1 year', p_all:'All time', work_title:'Job',
+            tab_miner:'Miner', tab_work:'Job', work_none:'No job', work_current:'Current job', work_next:'Next job', accumulated:'Accumulated salary',
+            earn_day:'Earn (per day)', hire:'Get next job', work_hint_initial:'Get a job to start earning', yarik_note:'Price updates every hour',
+            settings_title:'Settings', settings_volume:'Volume', settings_language:'Language', orders_desc:'Your active orders (limit buys and sells).',
+            miner_hint:'Upgrade miner to start earning'
+        },
+        ru: { buy:'Купить', sell:'Продать', close:'Закрыть', cancel:'Отмена', place:'Разместить', cancelAll:'Отменить все', noOrders:'Ордеров нет',
+            invalidOrderData:'Неверные данные ордера', buyPriceLow:'Цена покупки должна быть ниже текущей', sellPriceHigh:'Цена продажи должна быть выше текущей',
+            clear:'Очистить', confirm:'Подтвердить', upgrade:'Улучшить', claim:'Забрать', period:'Период', granularity:'Детализация', notEnoughFunds:'Недостаточно средств',
+            notEnoughYarikCoin:'Недостаточно YarikCoin', confirmClearTx:'Вы уверены, что хотите очистить историю транзакций?', type:'Тип', theme:'Тема',
+            line:'Линия', bar:'Бар', filled:'Закрашенный', filled_solid:'Полностью закрашенный', options:'Опции', markers:'Макс. и Мин. цена', trades:'Мои сделки',
+            for:'за', received:'получено', green:'Зеленая', blue:'Синяя', red:'Красная', purple:'Фиолетовая', black:'Чёрная', gr_auto:'Авто', gr_hour:'Час',
+            gr_day:'День', gr_month:'Месяц', p_1d:'1 день', p_1w:'1 неделя', p_1m:'1 месяц', p_1y:'1 год', p_all:'Все время', work_title:'Работа',
+            tab_miner:'Майнер', tab_work:'Работа', work_none:'Нет работы', work_current:'Текущая работа', work_next:'Следующая работа', accumulated:'Накопленная зарплата',
+            earn_day:'Зарплата (в день)', hire:'Получить следующую работу', work_hint_initial:'Получите свою первую работу, чтобы начать зарабатывать', yarik_note:'Цена изменяется каждый час',
+            settings_title:'Настройки', settings_volume:'Громкость', settings_language:'Язык', orders_desc:'Здесь показаны ваши размещённые ордера (лимитные покупки и продажи).',
+            miner_hint:'Улучшите майнер, чтобы начать добычу'
+        }
+    };
+
+    /* chart themes */
+    const chartThemes = {
+        green:{main:'#2e7d32',gradient:['rgba(46,125,50,0.14)','rgba(46,125,50,0.02)']},
+        blue:{main:'#1976d2',gradient:['rgba(25,118,210,0.14)','rgba(25,118,210,0.02)']},
+        red:{main:'#c62828',gradient:['rgba(198,40,40,0.14)','rgba(198,40,40,0.02)']},
+        purple:{main:'#6a1b9a',gradient:['rgba(106,27,154,0.14)','rgba(106,27,154,0.02)']},
+        black:{main:'#111111',gradient:['rgba(17,17,17,0.22)','rgba(17,17,17,0.04)']}
+    };
+
+    const state = {
+        currentLang: localStorage.getItem(STORAGE_KEYS.language) || 'ru',
+        balance: parseFloat(localStorage.getItem(STORAGE_KEYS.balance) || '100'),
+        coinBalance: parseFloat(localStorage.getItem(STORAGE_KEYS.coinBalance) || '0'),
+        volume: parseFloat(localStorage.getItem(STORAGE_KEYS.volume) || '0.2'),
+        chart: null, chartType: localStorage.getItem(STORAGE_KEYS.chartType) || 'filled',
+        chartTheme: localStorage.getItem(STORAGE_KEYS.chartTheme) || 'green',
+        showMarkers: localStorage.getItem(STORAGE_KEYS.showMarkers) !== 'false',
+        showTrades: localStorage.getItem(STORAGE_KEYS.showTrades) === 'true',
+        viewHours: parseInt(localStorage.getItem(STORAGE_KEYS.chartHours)) || 24,
+        granularity: localStorage.getItem(STORAGE_KEYS.chartGranularity) || 'hour',
+        tx: JSON.parse(localStorage.getItem(STORAGE_KEYS.tx) || '[]'),
+        orders: JSON.parse(localStorage.getItem(STORAGE_KEYS.orders) || '[]'),
+        miner: { level: parseInt(localStorage.getItem(STORAGE_KEYS.minerLevel) || '0'), totalMined: parseFloat(localStorage.getItem(STORAGE_KEYS.minerTotal) || '0'), lastSeen: parseInt(localStorage.getItem(STORAGE_KEYS.minerLastSeen) || Date.now()), fracCarry: parseFloat(localStorage.getItem(STORAGE_KEYS.minerFrac) || '0') },
+        currentOrderType: 'buy',
+        currentJob: parseInt(localStorage.getItem(STORAGE_KEYS.currentJob) || '0'),
+        jobAccum: parseFloat(localStorage.getItem(STORAGE_KEYS.jobAccum) || '0'),
+        activeTab: localStorage.getItem(STORAGE_KEYS.activeTab) || 'miner'
+    };
+
+    /* jobs — добавлена "Инженер Linux" после Программиста */
+    const jobs = [
+        {id:0,name:{en:'No job',ru:'Нет работы'},cost:0,daily:0},
+        {id:1,name:{en:'Cleaner',ru:'Уборщик'},cost:20,daily:0.5},
+        {id:2,name:{en:'Cashier',ru:'Кассир'},cost:100,daily:2.5},
+        {id:3,name:{en:'Teacher',ru:'Учитель'},cost:500,daily:12.5},
+        {id:4,name:{en:'Engineer',ru:'Инженер'},cost:2500,daily:60},
+        {id:5,name:{en:'Programmer',ru:'Программист'},cost:12500,daily:300},
+        {id:6,name:{en:'Linux Engineer',ru:'Инженер Linux'},cost:60000,daily:1500},
+        {id:7,name:{en:'Cosmonaut',ru:'Космонавт'},cost:300000,daily:7500},
+        {id:8,name:{en:'Businessman',ru:'Бизнесмен'},cost:1500000,daily:37500},
+        {id:9,name:{en:'Governor',ru:'Губернатор'},cost:7500000,daily:200000},
+        {id:10,name:{en:'President',ru:'Президент'},cost:40000000,daily:1000000},
+        {id:11,name:{en:'King',ru:'Король'},cost:200000000,daily:1000000},
+        {id:12,name:{en:'Emperor',ru:'Император'},cost:1000000000,daily:5000000},
+        {id:13,name:{en:'World Ruler',ru:'Повелитель мира'},cost:10000000000,daily:50000000}
+    ];
+
+    /* helpers for formatting */
+    function trim5(v){ const n=Number(v||0); const s=n.toFixed(5); return s.replace(/(\.\d*?[1-9])0+$/,'$1').replace(/\.0+$/,''); }
+    function formatCurrency(v){ return trim5(v) + '$'; }
+    function currentHourIndex(){ const H=484788; return Math.floor(Date.now()/3600000 - H); }
+    function showNotification(msg){ const n=document.createElement('div'); n.className='notification'; n.innerText=msg; DOM.notificationArea.appendChild(n); setTimeout(()=>{ n.style.animation='fadeOut 0.5s forwards'; setTimeout(()=>n.remove(),500); },4000); }
+
+    /* balance UI */
+    function updateBalanceUI(){
+        DOM.balance.innerText = formatCurrency(state.balance);
+        DOM.onBalance.innerText = trim5(state.coinBalance);
+        if(DOM.buyBtn) DOM.buyBtn.disabled = !(state.balance > 0);
+        if(DOM.sellBtn) DOM.sellBtn.disabled = !(state.coinBalance > 0);
+    }
+
+    /* transactions */
+    function addTx(type, amount, pricePer){
+        const tx = { id:'tx_'+Date.now(), type, amount, pricePer, total: amount * pricePer, time: Date.now() };
+        state.tx.unshift(tx); localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx)); renderTxs();
+    }
+    function renderTxs(){
+        DOM.txList.innerHTML = '';
+        const filtered = state.tx.filter(t => t.type === 'buy' || t.type === 'sell');
+        if(filtered.length === 0){ DOM.txList.innerHTML = `<div class="small-muted">${LOCALES[state.currentLang].noOrders}</div>`; return; }
+        filtered.forEach(t => {
+            const div=document.createElement('div'); div.className='tx-item';
+            const when=new Date(t.time).toLocaleString(state.currentLang,{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+            if(t.type === 'buy'){
+                const action = (state.currentLang==='ru' ? 'ПОКУПКА' : LOCALES[state.currentLang].buy.toUpperCase());
+                div.innerHTML = `<div><span class="type-buy">${action}</span> ${trim5(t.amount)} YarikCoin — ${LOCALES[state.currentLang].for} ${formatCurrency(t.total)}</div><div class="small-muted">(${when})</div>`;
+            } else {
+                const action = (state.currentLang==='ru' ? 'ПРОДАЖА' : LOCALES[state.currentLang].sell.toUpperCase());
+                div.innerHTML = `<div><span class="type-sell">${action}</span> ${trim5(t.amount)} YarikCoin — ${LOCALES[state.currentLang].received} ${formatCurrency(t.total)}</div><div class="small-muted">(${when})</div>`;
+            }
+            DOM.txList.appendChild(div);
+        });
+    }
+
+    /* orders */
+    function saveOrders(){ localStorage.setItem(STORAGE_KEYS.orders, JSON.stringify(state.orders)); renderOrders(); }
+    function renderOrders(){
+        DOM.ordersList.innerHTML='';
+        if(state.orders.length === 0){ DOM.ordersList.innerHTML = `<div class="small-muted">${LOCALES[state.currentLang].noOrders}</div>`; return; }
+        state.orders.forEach(o=>{
+            const d=document.createElement('div'); d.className='order-item';
+            const when=new Date(o.time).toLocaleString(state.currentLang,{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+            const badge = o.type === 'buy' ? (state.currentLang==='ru' ? 'ПОКУПКА' : LOCALES[state.currentLang].buy.toUpperCase()) : (state.currentLang==='ru' ? 'ПРОДАЖА' : LOCALES[state.currentLang].sell.toUpperCase());
+            d.innerHTML = `<div><span class="order-badge">${badge}</span> ${trim5(o.amount)} YarikCoin — ${formatCurrency(o.price)} — (${when})</div><button class="cancel-order-btn" data-order-id="${o.id}">×</button>`;
+            DOM.ordersList.appendChild(d);
+        });
+    }
+
+    /* offline order processing (unchanged) */
+    function processOfflineOrders(){
+        const lastSeenHour = parseInt(localStorage.getItem(STORAGE_KEYS.lastHour) || currentHourIndex());
+        const now = currentHourIndex();
+        const notifications=[];
+        if(now <= lastSeenHour){ localStorage.setItem(STORAGE_KEYS.lastHour, String(now)); return; }
+        for(let hour = lastSeenHour; hour < now; hour++){
+            if(hour < 0 || hour >= price.length) continue;
+            const histPrice = price[hour];
+            if(typeof histPrice === 'undefined' || histPrice === null) continue;
+            const remaining = [];
+            let changed=false;
+            state.orders.forEach(order=>{
+                if(order.type==='buy'){
+                    if(histPrice <= order.price){
+                        const cost = order.amount * order.price;
+                        if(state.balance >= cost){
+                            state.balance -= cost; state.coinBalance += order.amount; addTx('buy',order.amount,order.price); changed=true; notifications.push(`${(state.currentLang==='ru'?'Покупка':'Buy')} ${trim5(order.amount)} заполнен по ${formatCurrency(order.price)}`);
+                        } else remaining.push(order);
+                    } else remaining.push(order);
+                } else if(order.type==='sell'){
+                    if(histPrice >= order.price){
+                        if(state.coinBalance >= order.amount){
+                            state.coinBalance -= order.amount; state.balance += order.amount * order.price; addTx('sell',order.amount,order.price); changed=true; notifications.push(`${(state.currentLang==='ru'?'Продажа':'Sell')} ${trim5(order.amount)} заполнен по ${formatCurrency(order.price)}`);
+                        } else remaining.push(order);
+                    } else remaining.push(order);
+                } else remaining.push(order);
+            });
+            if(changed){ state.orders = remaining; saveOrders(); localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.coinBalance, state.coinBalance); updateBalanceUI(); }
+        }
+        localStorage.setItem(STORAGE_KEYS.lastHour, String(now));
+        notifications.forEach(n => showNotification(n));
+    }
+
+    /* --- МАЙНЕР: новая логика --- */
+    /* Базовая вероятность срабатывать в секунду при цене 0.5$ и уровне 1 (даёт ~1 монету/день) */
+    const BASE_PROB_AT_HALF_DOLLAR = 1 / 86400; // ≈ 1 раз в день при price=0.5 и levelMultiplier==1
+
+    /* стоимость следующего уровня (x4) */
+    function minerNextLevelCost(level){ return 25 * Math.pow(4, Math.max(0, level)); }
+
+    /* вероятность успешной добычи в одну секунду при уровне и цене */
+    function minerProbPerSecond(level, priceVal){
+        if(level <= 0) return 0;
+        const levelMultiplier = Math.pow(4, level - 1);
+        const priceFactor = (priceVal || 0.000001) / 0.5;
+        let p = BASE_PROB_AT_HALF_DOLLAR * priceFactor * levelMultiplier;
+        if(p > 1) p = 1;
+        return p;
+    }
+
+    /* среднее (ожидаемое) время на монету (сек) при текущей цене */
+    function minerExpectedSecondsPerCoin(level, priceVal){
+        const p = minerProbPerSecond(level, priceVal);
+        if(p <= 0) return Infinity;
+        return 1 / p;
+    }
+
+    /* UI и поведение майнера */
+    function initMinerUI(){
+        DOM.minerLevel.textContent = String(state.miner.level || 0);
+        const nextCost = minerNextLevelCost(state.miner.level);
+        if(state.miner.level === 0){
+            DOM.minerUpgrade.innerText = (state.currentLang === 'ru' ? 'Купить майнер' : 'Buy miner') + ` (${nextCost}$)`;
+            DOM.minerUpgrade.classList.remove('btn-sell'); DOM.minerUpgrade.classList.add('btn-buy');
+        } else {
+            DOM.minerUpgrade.innerText = (state.currentLang === 'ru' ? 'Улучшить' : 'Upgrade') + ` (${nextCost}$)`;
+        }
+
+        DOM.minerTotalMined.textContent = String(Math.floor(state.miner.totalMined || 0));
+        DOM.minerTotalUsd.textContent = formatCurrency((Math.floor(state.miner.totalMined || 0)) * (state.currentPrice || 0));
+
+        const avgSec = minerExpectedSecondsPerCoin(state.miner.level, state.currentPrice);
+        if(isFinite(avgSec)){
+            if(avgSec > 3600*5) DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s (${Math.round(avgSec/60)} min, ${Math.round(avgSec/3600)} h)`;
+            else if(avgSec > 600) DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s (${Math.round(avgSec/60)} min)`;
+            else DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s`;
+        } else DOM.minerAvgTime.innerText = '—';
+
+        const chancePct = minerProbPerSecond(state.miner.level, state.currentPrice) * 100;
+        DOM.minerChanceVal.innerText = (state.miner.level > 0 ? chancePct.toFixed(6) + '%' : '0%');
+
+        if(state.miner.level === 0){ DOM.minerContent.querySelector('#minerHint').style.display='block'; DOM.minerContent.querySelector('#minerHint').innerText = (state.currentLang==='ru'?LOCALES.ru.miner_hint:LOCALES.en.miner_hint); }
+        else { DOM.minerContent.querySelector('#minerHint').style.display='none'; }
+    }
+
+    /* Оффлайн-майнинг: рассчитываем ожидаемое число успехов за прошедшее время,
+       учитывая смену цены по часам. Сохраняем дробную часть (carry).
+    */
+    function handleOfflineMining(){
+        const last = state.miner.lastSeen || Date.now();
+        const now = Date.now();
+        const secsAway = Math.floor((now - last) / 1000);
+        if(secsAway <= 0){ state.miner.lastSeen = Date.now(); localStorage.setItem(STORAGE_KEYS.minerLastSeen, String(state.miner.lastSeen)); return; }
+
+        // We'll process in hourly chunks based on price[] availability.
+        const H = 484788;
+        let expected = 0;
+        let fromTs = last;
+        const toTs = now;
+
+        // iterate hour-by-hour between last and now
+        let curHourStart = Math.floor(fromTs / 3600000) * 3600000;
+        while(curHourStart < toTs){
+            const nextHourStart = curHourStart + 3600000;
+            const intervalStart = Math.max(fromTs, curHourStart);
+            const intervalEnd = Math.min(toTs, nextHourStart);
+            const secondsInInterval = Math.floor((intervalEnd - intervalStart) / 1000);
+            const hourIndex = Math.floor(curHourStart/3600000 - H);
+            let priceHour = price[hourIndex];
+            if(typeof priceHour === 'undefined' || priceHour === null){
+                // if price not available, fallback to currentPrice
+                priceHour = state.currentPrice || 0;
+            }
+            const p = minerProbPerSecond(state.miner.level, priceHour);
+            expected += p * secondsInInterval;
+            curHourStart = nextHourStart;
+        }
+
+        // add carry stored earlier
+        expected += (state.miner.fracCarry || 0);
+        const successes = Math.floor(expected);
+        const newCarry = expected - successes;
+
+        if(successes > 0){
+            state.miner.totalMined = (state.miner.totalMined || 0) + successes;
+            // push a tx of type 'mine' for history if desired (not shown in transactions list by default)
+            state.tx.unshift({ id:'tx_mine_off_'+Date.now(), type:'mine', amount: successes, pricePer: state.currentPrice || 0, total: successes * (state.currentPrice || 0), time: Date.now() });
+            localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
+        }
+
+        state.miner.fracCarry = newCarry;
+        state.miner.lastSeen = Date.now();
+        localStorage.setItem(STORAGE_KEYS.minerLastSeen, String(state.miner.lastSeen));
+        localStorage.setItem(STORAGE_KEYS.minerTotal, String(state.miner.totalMined));
+        localStorage.setItem(STORAGE_KEYS.minerFrac, String(state.miner.fracCarry));
+        initMinerUI();
+    }
+
+    /* Оффлайн-заработок по работе */
+    function handleOfflineWork(){
+        const last = parseInt(localStorage.getItem(STORAGE_KEYS.jobLastSeen) || Date.now());
+        const now = Date.now();
+        const secsAway = Math.floor((now - last) / 1000);
+        if(secsAway <= 0){ localStorage.setItem(STORAGE_KEYS.jobLastSeen, String(now)); return; }
+
+        const curJob = jobs.find(j => j.id === (state.currentJob || 0)) || jobs[0];
+        if(curJob && curJob.id !== 0 && curJob.daily && curJob.daily > 0){
+            const perSec = curJob.daily / 86400;
+            // expected addition:
+            const add = perSec * secsAway;
+            state.jobAccum = (state.jobAccum || 0) + add;
+            localStorage.setItem(STORAGE_KEYS.jobAccum, String(state.jobAccum));
+        }
+        localStorage.setItem(STORAGE_KEYS.jobLastSeen, String(now));
+        initMinerUI();
+        updateJobsUI();
+    }
+
+    /* Онлайн-майнинг: каждую секунду делаем случайную проверку с вероятностью p; при успехе +1 */
+    let minerInterval = null;
+    function startMinerOnline(){
+        if(minerInterval) clearInterval(minerInterval);
+        minerInterval = setInterval(()=>{
+            const p = minerProbPerSecond(state.miner.level, state.currentPrice || 0);
+            if(p > 0){
+                if(Math.random() < p){
+                    state.miner.totalMined = (state.miner.totalMined || 0) + 1;
+                    localStorage.setItem(STORAGE_KEYS.minerTotal, String(state.miner.totalMined));
+                    state.tx.unshift({ id:'tx_mine_'+Date.now(), type:'mine', amount: 1, pricePer: state.currentPrice || 0, total: 1 * (state.currentPrice || 0), time: Date.now() });
+                    localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
+                    initMinerUI();
+                }
+            }
+        }, 1000);
+    }
+
+    /* апгрейд майнера */
+    function minerUpgrade(){
+        const nextCost = minerNextLevelCost(state.miner.level);
+        if(state.miner.level === 0){
+            if(state.balance < nextCost){ alert(LOCALES[state.currentLang].notEnoughFunds); return; }
+            state.balance -= nextCost; state.miner.level = 1;
+            localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
+            initMinerUI(); updateBalanceUI(); showNotification((state.currentLang==='ru'?'Майнер куплен':'Miner purchased'));
+        } else {
+            if(state.balance < nextCost){ alert(LOCALES[state.currentLang].notEnoughFunds); return; }
+            state.balance -= nextCost; state.miner.level += 1;
+            localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
+            initMinerUI(); updateBalanceUI(); showNotification((state.currentLang==='ru'?'Майнер улучшен':'Miner upgraded'));
+        }
+    }
+
+    /* забирать добытое */
+    function minerClaim(){
+        const amt = Math.floor(state.miner.totalMined || 0);
+        if(amt > 0){
+            state.coinBalance += amt; state.miner.totalMined -= amt;
+            localStorage.setItem(STORAGE_KEYS.minerTotal, String(state.miner.totalMined)); localStorage.setItem(STORAGE_KEYS.coinBalance, state.coinBalance);
+            initMinerUI(); updateBalanceUI();
+            state.tx.unshift({ id:'tx_mine_claim_'+Date.now(), type:'mine', amount: amt, pricePer: state.currentPrice || 0, total: amt * (state.currentPrice || 0), time: Date.now() });
+            localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
+            showNotification((state.currentLang==='ru'?'Майнер: добыто ':'Mined: ') + String(amt) + ' YarikCoin (' + formatCurrency(amt * (state.currentPrice || 0)) + ')');
+        } else showNotification(state.currentLang==='ru'?'Нечего забирать':'Nothing to claim');
+    }
+
+    /* jobs UI and earnings */
+    function updateJobsUI(){
+        const cur = jobs.find(j => j.id === (state.currentJob || 0)) || jobs[0];
+        const next = jobs.find(j => j.id === (state.currentJob || 0) + 1);
+        DOM.currentJob.innerText = cur.name[state.currentLang];
+        DOM.nextJob.innerText = next ? next.name[state.currentLang] : '-';
+        DOM.accSalary.innerText = formatCurrency(state.jobAccum || 0);
+        const daily = cur.daily || 0;
+        DOM.jobEarnings.innerText = `${trim5(daily)}$`;
+        if(cur.id === 0){ DOM.workHint.style.display='block'; DOM.workHint.innerText = LOCALES[state.currentLang].work_hint_initial; }
+        else { DOM.workHint.style.display='none'; }
+        if(next){
+            if(state.currentJob === 0) DOM.hireNextJob.innerText = (state.currentLang==='ru' ? `Получить первую работу (${next.cost}$)` : `Get first job (${next.cost}$)`);
+            else DOM.hireNextJob.innerText = (state.currentLang==='ru' ? `Получить следующую работу (${next.cost}$)` : `Get next job (${next.cost}$)`);
+            DOM.hireNextJob.style.display = 'inline-block';
+        } else DOM.hireNextJob.style.display = 'none';
+    }
+    function hireNextJob(){
+        const next = jobs.find(j => j.id === (state.currentJob || 0) + 1);
+        if(!next){ alert(state.currentLang==='ru'?'Нет следующей работы':'No next job'); return; }
+        if(state.balance < next.cost){ alert(LOCALES[state.currentLang].notEnoughFunds); return; }
+        state.balance -= next.cost; state.currentJob = next.id;
+        localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.currentJob, String(state.currentJob));
+        updateBalanceUI(); updateJobsUI(); showNotification((state.currentLang==='ru'?'Устроились на работу: ':'Hired: ') + next.name[state.currentLang]);
+    }
+    function startWorkEarnings(){ setInterval(()=>{ const cur = jobs.find(j => j.id === (state.currentJob || 0)) || jobs[0]; if(cur && cur.daily && cur.daily>0){ const perSec = cur.daily / 86400; state.jobAccum = (state.jobAccum || 0) + perSec; localStorage.setItem(STORAGE_KEYS.jobAccum, String(state.jobAccum)); updateJobsUI(); } }, 1000); }
+    function claimJobSalary(){ if(!(state.jobAccum > 0)){ showNotification(state.currentLang==='ru'?'Накопленной зарплаты нет':'No salary to claim'); return; } const amt = state.jobAccum; state.balance += amt; state.jobAccum = 0; localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.jobAccum, '0'); updateBalanceUI(); updateJobsUI(); state.tx.unshift({ id:'tx_job_'+Date.now(), type:'job', amount: amt, pricePer: 1, total: amt, time: Date.now() }); localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx)); showNotification((state.currentLang==='ru'?'Зарплата забрана: ':'Salary claimed: ') + formatCurrency(amt)); }
+
+    /* chart helpers */
+    function aggregateData(start,end,bucketHours){
+        const labels=[], data=[];
+        for(let t=start;t<=end;t+=bucketHours){
+            let sum=0,cnt=0;
+            for(let i=t;i<Math.min(t+bucketHours,end+1);i++){
+                if(typeof price[i] !== 'undefined' && price[i] !== null){ sum += price[i]; cnt++; }
+            }
+            const val = cnt ? (sum/cnt) : null;
+            data.push(val);
+            const d = new Date((t + 484788) * 3600000);
+            const opts = bucketHours >= 24 ? {month:'short',year:'numeric'} : (bucketHours >= 1 && bucketHours < 24 ? {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'} : {hour:'2-digit',minute:'2-digit'});
+            labels.push(d.toLocaleString(state.currentLang, opts));
+        }
+        if(start===0 && bucketHours>=24 && data.length>0 && (data[0]===null)) data[0]=0.4;
+        return { labels, data };
+    }
+    function firstLastNonNull(arr){ let first=null,last=null; for(let i=0;i<arr.length;i++){ if(arr[i]!==null&&typeof arr[i]!=='undefined'){ first=arr[i]; break } } for(let i=arr.length-1;i>=0;i--){ if(arr[i]!==null&&typeof arr[i]!=='undefined'){ last=arr[i]; break } } return { first, last }; }
+
+    /* render chart */
+    function renderChartFor(hours, customStartHour = null){
+        const now = currentHourIndex();
+        const start = (customStartHour !== null) ? customStartHour : Math.max(0, now - hours + 1);
+        const end = start + hours - 1;
+        state.viewHours = hours; state.viewStartHour = start;
+        let bucket = 1;
+        if(state.granularity === 'hour') bucket = 1;
+        else if(state.granularity === 'day') bucket = 24;
+        else if(state.granularity === 'month') bucket = 24*30;
+        else { if(hours <= 48) bucket = 1; else if(hours <=720) bucket = 6; else if(hours<=8760) bucket = 24; else bucket = 24*30; }
+
+        const { labels, data } = aggregateData(start, end, bucket);
+        if(state.chart) try{ state.chart.destroy(); } catch(e){}
+
+        const theme = chartThemes[state.chartTheme] || chartThemes.green;
+        const ctx = DOM.priceChartCanvas.getContext('2d');
+        const gradient = ctx.createLinearGradient(0,0,0,300);
+        gradient.addColorStop(0, theme.gradient[0]); gradient.addColorStop(1, theme.gradient[1]);
+
+        let fillOption=false, background=theme.main, border=theme.main;
+        if(state.chartType === 'filled'){ fillOption=true; background = gradient; }
+        else if(state.chartType === 'filled-solid'){ fillOption=true; background = theme.gradient[0]; }
+        else if(state.chartType === 'line'){ fillOption=false; }
+
+        const mainDataset = { label:'Price', data, borderColor: border, backgroundColor: background, tension: 0.15, pointRadius:0, fill: fillOption };
+        const datasets = [ mainDataset ];
+
+        let dataMin = Infinity, dataMax = -Infinity, minIdx=-1, maxIdx=-1;
+        data.forEach((v,i)=>{ if(v !== null && typeof v !== 'undefined'){ if(v < dataMin){ dataMin=v; minIdx=i } if(v > dataMax){ dataMax=v; maxIdx=i } } });
+
+        if(state.showTrades){
+            const buyData = new Array(data.length).fill(null);
+            const sellData = new Array(data.length).fill(null);
+            const startHour = start; const bucketHours = bucket;
+            state.tx.filter(t => t.type==='buy'||t.type==='sell').forEach(t=>{
+                const tradeHour = Math.floor(t.time/3600000 - 484788);
+                if(tradeHour >= startHour && tradeHour <= end){
+                    const index = Math.floor((tradeHour - startHour)/bucketHours);
+                    if(index >= 0 && index < data.length){
+                        if(t.type === 'buy') buyData[index] = t.pricePer;
+                        else sellData[index] = t.pricePer;
+                    }
+                }
+            });
+            datasets.push({ label:'Buys', data:buyData, pointRadius:8, pointStyle:'rect', pointBackgroundColor:'#4caf50', showLine:false, type:'line' });
+            datasets.push({ label:'Sells', data:sellData, pointRadius:8, pointStyle:'rect', pointBackgroundColor:'#f44336', showLine:false, type:'line' });
+        }
+
+        if(state.showMarkers && minIdx >= 0 && maxIdx >= 0){
+            const maxMarker = new Array(data.length).fill(null);
+            const minMarker = new Array(data.length).fill(null);
+            maxMarker[maxIdx] = data[maxIdx]; minMarker[minIdx] = data[minIdx];
+            datasets.push({ label:'Max', data:maxMarker, pointRadius:7, borderColor:'#2e7d32', backgroundColor:'#2e7d32', showLine:false, pointStyle:'circle', type:'line' });
+            datasets.push({ label:'Min', data:minMarker, pointRadius:7, borderColor:'#f44336', backgroundColor:'#f44336', showLine:false, pointStyle:'circle', type:'line' });
+            const timeOpts = { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' };
+            DOM.maxPrice.innerText = (maxIdx>=0 && isFinite(dataMax)) ? `${formatCurrency(dataMax)} (${new Date((start + maxIdx*bucket + 484788) * 3600000).toLocaleString(state.currentLang, timeOpts)})` : '-';
+            DOM.minPrice.innerText = (minIdx>=0 && isFinite(dataMin)) ? `${formatCurrency(dataMin)} (${new Date((start + minIdx*bucket + 484788) * 3600000).toLocaleString(state.currentLang, timeOpts)})` : '-';
+        } else { DOM.maxPrice.innerText = '-'; DOM.minPrice.innerText = '-'; }
+
+        let suggestedMin=undefined, suggestedMax=undefined;
+        if(isFinite(dataMin) && isFinite(dataMax)){ const pad = (dataMax-dataMin)*0.08 || (Math.abs(dataMax)*0.02) || 0.01; suggestedMin = dataMin - pad; suggestedMax = dataMax + pad; }
+
+        state.chart = new Chart(ctx, {
+            type: (state.chartType === 'bar' ? 'bar' : 'line'),
+            data: { labels, datasets },
+            options: {
+                responsive:true, maintainAspectRatio:false,
+                interaction:{ mode:'index', intersect:false },
+                plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false, backgroundColor:'rgba(11,23,32,0.9)', titleColor:'#fff', bodyColor:'#fff', padding:10, cornerRadius:8, displayColors:false, callbacks:{ label: ctx => `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y)}` } } },
+                scales: { x:{ display:true, grid:{ drawOnChartArea:false, color:'rgba(0,0,0,0.05)' }, ticks:{ color:'var(--muted)', font:{ size:11 } } }, y:{ ticks:{ callback:v=>trim5(v), color:'var(--muted)', font:{ size:11 } }, grid:{ color:'rgba(0,0,0,0.05)' }, suggestedMin, suggestedMax } }
+            }
+        });
+
+        const fl = firstLastNonNull(data);
+        if(fl.first !== null && fl.last !== null){ const delta = fl.last - fl.first; const pct = fl.first !== 0 ? (delta/fl.first)*100 : 0; const sign = delta>=0?'+':''; DOM.periodChange.innerText = `${sign}${trim5(delta)}$ (${sign}${pct.toFixed(2)}%)`; DOM.periodChange.style.color = delta>=0?'green':'red'; } else { DOM.periodChange.innerText=''; }
+
+        syncActiveTimeBtnColor();
+    }
+
+    function syncActiveTimeBtnColor(){
+        const active = DOM.timeSelector.querySelector('.time-btn.active');
+        DOM.timeSelector.querySelectorAll('.time-btn').forEach(b => { b.style.background=''; b.style.color=''; b.style.borderColor=''; });
+        if(active){
+            const theme = chartThemes[state.chartTheme] || chartThemes.green;
+            active.style.background = theme.main; active.style.color='#fff'; active.style.borderColor='transparent';
+        }
+    }
+
+    /* pan functions (respect boundaries) */
+    function panBy(direction, amount){
+        const now = currentHourIndex();
+        let newStart = (state.viewStartHour || (now - state.viewHours + 1)) + (direction === 'left' ? -amount : amount);
+        if(newStart < 0) newStart = 0;
+        const maxStart = now - state.viewHours + 1;
+        if(direction === 'left' && (state.viewStartHour||0) === 0 && newStart === 0) return;
+        newStart = Math.min(newStart, maxStart);
+        renderChartFor(state.viewHours, newStart);
+    }
+    function panRange(direction){
+        let shift = 0; const gr = state.granularity;
+        if(gr === 'hour') shift = 1; else if(gr === 'day') shift = 24; else if(gr === 'month') shift = 24*30; else shift = Math.max(1, Math.floor(state.viewHours/4));
+        panBy(direction, shift);
+    }
+    function panPeriod(direction){ panBy(direction, state.viewHours); }
+
+    /* modal / trade */
+    function openModal(modal){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+    function closeModal(modal){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+
+    function openTrade(type){
+        DOM.tradeTitle.innerText = type === 'buy' ? (state.currentLang==='ru'?'Купить YarikCoin':'Buy YarikCoin') : (state.currentLang==='ru'?'Продать YarikCoin':'Sell YarikCoin');
+        DOM.tradeLabel.innerText = type === 'buy' ? (state.currentLang==='ru'?'Количество для покупки:':'Amount to buy:') : (state.currentLang==='ru'?'Количество для продажи:':'Amount to sell:');
+        DOM.confirmTradeBtn.innerText = LOCALES[state.currentLang].confirm;
+        DOM.confirmTradeBtn.className = type === 'buy' ? 'btn btn-buy' : 'btn btn-sell';
+        DOM.tradeAmount.value = ''; state.pendingTradeType = type; updateTradeInfo(); openModal(DOM.tradeModal); DOM.tradeAmount.focus();
+    }
+    function updateTradeInfo(){
+        const v = parseFloat(DOM.tradeAmount.value);
+        const maxBuy = (state.currentPrice > 0) ? (state.balance / state.currentPrice) : 0; const maxSell = state.coinBalance;
+        if(!v || v <= 0){
+            if(state.pendingTradeType === 'buy') DOM.tradeInfo.innerText = (state.currentLang==='ru'?'Макс к покупке: ':'Max to buy: ') + trim5(maxBuy) + ' YarikCoin';
+            else DOM.tradeInfo.innerText = (state.currentLang==='ru'?'Макс к продаже: ':'Max to sell: ') + trim5(maxSell) + ' YarikCoin';
+            return;
+        }
+        if(state.pendingTradeType === 'buy'){ const cost = v * state.currentPrice; DOM.tradeInfo.innerText = (state.currentLang==='ru'?'Стоимость: ':'Cost: ') + formatCurrency(cost) + ` (${state.currentLang==='ru'?'Макс:':'Max:'} ${trim5(maxBuy)})`; }
+        else { const gain = v * state.currentPrice; DOM.tradeInfo.innerText = (state.currentLang==='ru'?'Вы получите: ':'You will receive: ') + formatCurrency(gain) + ` (${state.currentLang==='ru'?'Макс:':'Max:'} ${trim5(maxSell)})`; }
+    }
+    function confirmTrade(){
+        const v = parseFloat(DOM.tradeAmount.value);
+        if(!v || v <= 0){ alert(LOCALES[state.currentLang].invalidOrderData); return; }
+        if(state.pendingTradeType === 'buy'){ const cost = v * state.currentPrice; if(cost > state.balance){ alert(LOCALES[state.currentLang].notEnoughFunds); return; } state.balance -= cost; state.coinBalance += v; addTx('buy', v, state.currentPrice); }
+        else { if(v > state.coinBalance){ alert(LOCALES[state.currentLang].notEnoughYarikCoin); return; } state.coinBalance -= v; state.balance += v * state.currentPrice; addTx('sell', v, state.currentPrice); }
+        localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.coinBalance, state.coinBalance); updateBalanceUI(); closeModal(DOM.tradeModal);
+    }
+
+    /* localization */
+    function applyLocale(lang){
+        state.currentLang = lang; localStorage.setItem(STORAGE_KEYS.language, lang);
+        const mapping = {
+            'brand.title':{en:'YarikCoin',ru:'YarikCoin'}, 'brand.subtitle':{en:'Version 2.0',ru:'Версия 2.0'},
+            'title.main':{en:'YarikCoin',ru:'YarikCoin'}, 'price.label':{en:'Price:',ru:'Цена:'}, 'shop.label':{en:'Shop:',ru:'Магазин:'},
+            'balance.label':{en:'Balance:',ru:'Баланс:'}, 'onbalance.label':{en:'YarikCoin on balance:',ru:'YarikCoin на балансе:'},
+            'history.before':{en:'Chart:',ru:'График:'}, 'history.max_period':{en:'Max price in period:',ru:'Макс. цена за период:'},
+            'history.min_period':{en:'Min price in period:',ru:'Мин. цена за период:'}, 'transactions.title':{en:'Transactions',ru:'Транзакции'},
+            'transactions.hint':{en:'Your buy/sell history',ru:'История ваших покупок/продаж'}, 'orders.title':{en:'Orders',ru:'Ордеры'},
+            'orders.type':{en:'Type',ru:'Тип'}, 'orders.amount':{en:'Amount',ru:'Количество'}, 'orders.price':{en:'Price (per 1 coin)',ru:'Цена (за 1 монету)'},
+            'miner.title':{en:'Miner',ru:'Майнер'}, 'miner.chance_label':{en:'Chance per second:',ru:'Шанс добыть каждую секунду:'},
+            'miner.level_label':{en:'Level:',ru:'Уровень:'}, 'miner.total_label':{en:'Total mined:',ru:'Всего добыто:'}, 'miner.avg_label':{en:'Average time per coin:',ru:'Среднее время на монету:'},
+            'settings.title':{en:'Settings',ru:'Настройки'}, 'settings.volume':{en:'Volume',ru:'Громкость'}, 'settings.language':{en:'Language',ru:'Язык'},
+            'chart.period':{en:'Period',ru:'Период'}, 'chart.granularity':{en:'Granularity',ru:'Детализация'}, 'chart.type':{en:'Type',ru:'Тип'},
+            'chart.theme':{en:'Theme',ru:'Тема'}, 'chart.options':{en:'Options',ru:'Опции'}, 'work.title':{en:'Job',ru:'Работа'},
+            'work.hint':{en:'Get a job to start earning',ru:'Получите свою первую работу, чтобы начать зарабатывать'},
+            'work.current_label':{en:'Current job:',ru:'Текущая работа:'}, 'work.next_label':{en:'Next job:',ru:'Следующая работа:'},
+            'work.accum_label':{en:'Accumulated salary:',ru:'Накопленная зарплата:'}, 'work.earn_label':{en:'Earn (per day):',ru:'Зарплата (в день):'},
+            'button.buy':{en:LOCALES.en.buy,ru:LOCALES.ru.buy}, 'button.sell':{en:LOCALES.en.sell,ru:LOCALES.ru.sell}, 'button.clear':{en:LOCALES.en.clear,ru:LOCALES.ru.clear},
+            'button.cancelAll':{en:LOCALES.en.cancelAll,ru:LOCALES.ru.cancelAll}, 'button.place':{en:LOCALES.en.place,ru:LOCALES.ru.place}, 'button.upgrade':{en:LOCALES.en.upgrade,ru:LOCALES.ru.upgrade},
+            'button.claim':{en:LOCALES.en.claim,ru:LOCALES.ru.claim}, 'button.close':{en:LOCALES.en.close,ru:LOCALES.ru.close}, 'button.cancel':{en:LOCALES.en.cancel,ru:LOCALES.ru.cancel},
+            'button.confirm':{en:LOCALES.en.confirm,ru:LOCALES.ru.confirm}, 'gr.auto':{en:LOCALES.en.gr_auto,ru:LOCALES.ru.gr_auto},
+            'gr.hour':{en:LOCALES.en.gr_hour,ru:LOCALES.ru.gr_hour}, 'gr.day':{en:LOCALES.en.gr_day,ru:LOCALES.ru.gr_day}, 'gr.month':{en:LOCALES.en.gr_month,ru:LOCALES.ru.gr_month},
+            'period.1d':{en:LOCALES.en.p_1d,ru:LOCALES.ru.p_1d}, 'period.1w':{en:LOCALES.en.p_1w,ru:LOCALES.ru.p_1w}, 'period.1m':{en:LOCALES.en.p_1m,ru:LOCALES.ru.p_1m},
+            'period.1y':{en:LOCALES.en.p_1y,ru:LOCALES.ru.p_1y}, 'period.all':{en:LOCALES.en.p_all,ru:LOCALES.ru.p_all},
+            'type.line':{en:LOCALES.en.line,ru:LOCALES.ru.line}, 'type.bar':{en:LOCALES.en.bar,ru:LOCALES.ru.bar}, 'type.filled':{en:LOCALES.en.filled,ru:LOCALES.ru.filled},
+            'type.filled_solid':{en:LOCALES.en.filled_solid,ru:LOCALES.ru.filled_solid}, 'theme.green':{en:LOCALES.en.green,ru:LOCALES.ru.green},
+            'theme.blue':{en:LOCALES.en.blue,ru:LOCALES.ru.blue}, 'theme.red':{en:LOCALES.en.red,ru:LOCALES.ru.red}, 'theme.purple':{en:LOCALES.en.purple,ru:LOCALES.ru.purple},
+            'theme.black':{en:LOCALES.en.black,ru:LOCALES.ru.black}, 'options.markers':{en:LOCALES.en.markers,ru:LOCALES.ru.markers}, 'options.trades':{en:LOCALES.en.trades,ru:LOCALES.ru.trades},
+            'yarik.note':{en:LOCALES.en.yarik_note,ru:LOCALES.ru.yarik_note}
+        };
+
+        document.querySelectorAll('[data-i18n]').forEach(el=>{
+            const key = el.getAttribute('data-i18n');
+            if(mapping[key] && mapping[key][lang]) el.innerText = mapping[key][lang];
+        });
+
+        const buyBtn = DOM.orderTypeSelector.querySelector('[data-type="buy"]');
+        const sellBtn = DOM.orderTypeSelector.querySelector('[data-type="sell"]');
+        if(buyBtn) buyBtn.innerText = lang==='ru' ? 'ПОКУПКА' : LOCALES[lang].buy.toUpperCase();
+        if(sellBtn) sellBtn.innerText = lang==='ru' ? 'ПРОДАЖА' : LOCALES[lang].sell.toUpperCase();
+
+        DOM.orderDesc.innerText = LOCALES[lang].orders_desc;
+        DOM.supportBtn && (DOM.supportBtn.innerText = lang==='ru' ? 'Техподдержка' : 'Support');
+
+        initMinerUI(); updateJobsUI(); updateBalanceUI(); renderTxs(); renderOrders(); renderChartFor(state.viewHours, state.viewStartHour);
+    }
+
+    /* init: attach listeners, etc. */
+    function init(){
+        if(state.activeTab === 'work'){ DOM.minerContent.style.display='none'; DOM.workContent.style.display='block'; DOM.tabWork.classList.add('active'); DOM.tabMiner.classList.remove('active'); }
+        else { DOM.minerContent.style.display='block'; DOM.workContent.style.display='none'; DOM.tabMiner.classList.add('active'); DOM.tabWork.classList.remove('active'); }
+
+        DOM.tabMiner.addEventListener('click', ()=>{ DOM.minerContent.style.display='block'; DOM.workContent.style.display='none'; DOM.tabMiner.classList.add('active'); DOM.tabWork.classList.remove('active'); state.activeTab='miner'; localStorage.setItem(STORAGE_KEYS.activeTab,state.activeTab); });
+        DOM.tabWork.addEventListener('click', ()=>{ DOM.minerContent.style.display='none'; DOM.workContent.style.display='block'; DOM.tabWork.classList.add('active'); DOM.tabMiner.classList.remove('active'); state.activeTab='work'; localStorage.setItem(STORAGE_KEYS.activeTab,state.activeTab); });
+
+        DOM.languageSwitch.querySelectorAll('.lang-btn').forEach(b=>{
+            b.addEventListener('click',()=>{ applyLocale(b.dataset.lang); DOM.languageSwitch.querySelectorAll('.lang-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); });
+            if(b.dataset.lang === state.currentLang) b.classList.add('active');
+        });
+
+        DOM.volumeControl.value = state.volume;
+        DOM.volumeControl.addEventListener('input', e=>{ state.volume = parseFloat(e.target.value); localStorage.setItem(STORAGE_KEYS.volume, state.volume); DOM.mainMusic.volume = state.volume; });
+        DOM.mainMusic.volume = state.volume;
+        DOM.mainMusic.load();
+
+        const nowH = currentHourIndex();
+        state.currentPrice = price[nowH] ?? 0;
+        DOM.price.innerText = formatCurrency(state.currentPrice);
+
+        processOfflineOrders();
+        handleOfflineMining();
+        handleOfflineWork();
+
+        updateBalanceUI(); renderTxs(); renderOrders();
+
+        DOM.timeSelector.querySelectorAll('.time-btn').forEach(btn=>{
+            btn.addEventListener('click', e=>{
+                e.preventDefault(); btn.blur();
+                try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){}
+                const hoursRaw = parseInt(btn.dataset.hours);
+                let hours = hoursRaw; let startHour = null; const now = currentHourIndex();
+                if(hoursRaw === 999999){ startHour = 0; hours = now + 1; } else { hours = Math.min(hoursRaw, now + 1); }
+                localStorage.setItem(STORAGE_KEYS.chartHours, hours);
+                DOM.timeSelector.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active');
+                if((state.granularity === 'day' && hours <= 24) || (state.granularity === 'month' && hours < 24*30)){ state.granularity = 'auto'; localStorage.setItem(STORAGE_KEYS.chartGranularity,'auto'); DOM.granularity.querySelectorAll('.gran-btn').forEach(b=>b.classList.remove('active')); DOM.granularity.querySelector('[data-gr="auto"]').classList.add('active'); }
+                renderChartFor(hours, startHour);
+            });
+        });
+
+        state.granularityBtns = Array.from(document.querySelectorAll('.gran-btn'));
+        state.granularityBtns.forEach(b=>{ b.addEventListener('click', e=>{ e.preventDefault(); b.blur(); if(b.disabled) return; state.granularity=b.dataset.gr; localStorage.setItem(STORAGE_KEYS.chartGranularity,state.granularity); state.granularityBtns.forEach(x=>x.classList.remove('active')); b.classList.add('active'); renderChartFor(state.viewHours,state.viewStartHour); }); });
+
+        document.querySelectorAll('.chart-type-btn').forEach(btn=>{ btn.addEventListener('click', ()=>{ state.chartType = btn.dataset.type; localStorage.setItem(STORAGE_KEYS.chartType,state.chartType); document.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderChartFor(state.viewHours,state.viewStartHour); }); });
+        document.querySelectorAll('.chart-theme-btn').forEach(btn=>{ btn.addEventListener('click', ()=>{ state.chartTheme = btn.dataset.theme; localStorage.setItem(STORAGE_KEYS.chartTheme,state.chartTheme); document.querySelectorAll('.chart-theme-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderChartFor(state.viewHours,state.viewStartHour); }); });
+        document.querySelectorAll('.chart-option-btn').forEach(btn=>{ btn.addEventListener('click', e=>{ const option = e.target.dataset.option; if(option==='markers') state.showMarkers = !state.showMarkers; if(option==='trades') state.showTrades = !state.showTrades; e.target.classList.toggle('active'); localStorage.setItem(STORAGE_KEYS.showMarkers, String(state.showMarkers)); localStorage.setItem(STORAGE_KEYS.showTrades, String(state.showTrades)); renderChartFor(state.viewHours,state.viewStartHour); }); });
+
+        DOM.timeSelector.querySelector(`[data-hours="${state.viewHours}"]`)?.classList.add('active');
+        DOM.granularity.querySelector(`[data-gr="${state.granularity}"]`)?.classList.add('active');
+        document.querySelector(`.chart-type-btn[data-type="${state.chartType}"]`)?.classList.add('active');
+        document.querySelector(`.chart-theme-btn[data-theme="${state.chartTheme}"]`)?.classList.add('active');
+        if(state.showMarkers) document.querySelector(`[data-option="markers"]`)?.classList.add('active');
+        if(state.showTrades) document.querySelector(`[data-option="trades"]`)?.classList.add('active');
+
+        DOM.prevRangeBtn.addEventListener('click', e=>{ e.preventDefault(); e.target.blur(); panRange('left'); });
+        DOM.nextRangeBtn.addEventListener('click', e=>{ e.preventDefault(); e.target.blur(); panRange('right'); });
+        DOM.prevPeriodBtn.addEventListener('click', e=>{ e.preventDefault(); e.target.blur(); panPeriod('left'); });
+        DOM.nextPeriodBtn.addEventListener('click', e=>{ e.preventDefault(); e.target.blur(); panPeriod('right'); });
+
+        DOM.buyBtn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} openTrade('buy'); });
+        DOM.sellBtn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} openTrade('sell'); });
+        DOM.confirmTradeBtn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} confirmTrade(); });
+        DOM.cancelTradeBtn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} closeModal(DOM.tradeModal); });
+        DOM.tradeAmount.addEventListener('input', updateTradeInfo);
+
+        DOM.settingsBtn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} openModal(DOM.settingsModal); });
+        DOM.closeSettings.addEventListener('click', ()=>{ closeModal(DOM.settingsModal); });
+        DOM.settingsModal.addEventListener('click', e=>{ if(e.target===DOM.settingsModal) closeModal(DOM.settingsModal); });
+
+        if(DOM.supportBtn){ DOM.supportBtn.style.alignSelf='center'; DOM.supportBtn.addEventListener('click', ()=>{ window.open('https://larfi44.github.io/Yarik_Studio.github.io/technical_support.html','_blank'); }); }
+
+        DOM.orderTypeSelector.querySelectorAll('.btn').forEach(btn=>{ btn.addEventListener('click', ()=>{ try{ DOM.clickSound.currentTime=0; DOM.clickSound.play(); }catch(e){} const type=btn.dataset.type; state.currentOrderType=type; DOM.orderTypeSelector.querySelectorAll('.btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); const placeBtn = DOM.placeOrder; placeBtn.classList.remove('btn-buy','btn-sell'); placeBtn.classList.add(type==='buy'?'btn-buy':'btn-sell'); }); });
+        DOM.orderTypeSelector.querySelector(`[data-type="${state.currentOrderType}"]`)?.classList.add('active');
+
+        DOM.placeOrder.addEventListener('click', ()=>{ const type=state.currentOrderType; const amount=parseFloat(DOM.orderAmount.value); const priceVal=parseFloat(DOM.orderPrice.value); if(!amount||amount<=0||!priceVal||priceVal<=0){ alert(LOCALES[state.currentLang].invalidOrderData); return; } if(type==='buy'){ if(priceVal>=state.currentPrice){ alert(LOCALES[state.currentLang].buyPriceLow); return; } if(amount*priceVal>state.balance){ alert(LOCALES[state.currentLang].notEnoughFunds); return; } } else { if(priceVal<=state.currentPrice){ alert(LOCALES[state.currentLang].sellPriceHigh); return; } if(amount>state.coinBalance){ alert(LOCALES[state.currentLang].notEnoughYarikCoin); return; } } const o={id:'ord_'+Date.now(),type,amount,price:priceVal,time:Date.now()}; state.orders.unshift(o); saveOrders(); DOM.orderAmount.value=''; DOM.orderPrice.value=''; });
+
+        DOM.cancelAllOrders.addEventListener('click', ()=>{ state.orders=[]; saveOrders(); });
+
+        DOM.clearTxBtn.addEventListener('click', ()=>{ if(confirm(LOCALES[state.currentLang].confirmClearTx)){ state.tx = state.tx.filter(t => t.type !== 'mine' && t.type !== 'job'); localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx)); renderTxs(); } });
+
+        DOM.ordersList.addEventListener('click', e=>{ if(e.target.classList.contains('cancel-order-btn')){ const id=e.target.dataset.orderId; state.orders = state.orders.filter(o=>o.id!==id); saveOrders(); } });
+
+        DOM.minerUpgrade.addEventListener('click', minerUpgrade);
+        DOM.minerClaim.addEventListener('click', minerClaim);
+        DOM.hireNextJob && DOM.hireNextJob.addEventListener('click', hireNextJob);
+        DOM.claimJob && DOM.claimJob.addEventListener('click', claimJobSalary);
+
+        DOM.clickSound.load();
+        document.body.addEventListener('click', e=>{ DOM.mainMusic.play().catch(()=>{}); }, { once:true });
+
+        applyLocale(state.currentLang);
+        initMinerUI(); updateJobsUI(); updateBalanceUI(); renderTxs(); renderOrders();
+        startMinerOnline(); startWorkEarnings();
+        // ensure jobLastSeen exists
+        if(!localStorage.getItem(STORAGE_KEYS.jobLastSeen)) localStorage.setItem(STORAGE_KEYS.jobLastSeen, String(Date.now()));
+        renderChartFor(state.viewHours, state.viewStartHour);
+
+        document.addEventListener('click', e=>{ if(e.target.tagName==='BUTTON') e.target.blur(); });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>

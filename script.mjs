@@ -99,7 +99,12 @@ const DOM = {
     toggleCustomBtn: document.getElementById('toggleCustomBtn'),
     customPanel: document.getElementById('customPanel'),
     promocodeInput: document.getElementById('promocodeInput'),
-    promocodeApply: document.getElementById('promocodeApply')
+    promocodeApply: document.getElementById('promocodeApply'),
+    filterBuy: document.getElementById('filterBuy'),
+    filterSell: document.getElementById('filterSell'),
+    filterMiner: document.getElementById('filterMiner'),
+    filterJob: document.getElementById('filterJob'),
+    filterPromocodes: document.getElementById('filterPromocodes')
 };
 
 const LOCALES = {
@@ -250,15 +255,26 @@ function updateBalanceUI() {
 /* Transactions rendering: exclude mine/job but include promo */
 function renderTxs() {
     DOM.txList.innerHTML = '';
-    const filtered = state.tx.filter(t => (t.type === 'buy' || t.type === 'sell' || t.type === 'promo'));
+    const filtered = state.tx.filter(t => {
+        if (t.type === 'buy' && state.filterBuy) return true;
+        if (t.type === 'sell' && state.filterSell) return true;
+        if (t.type === 'mine' && state.filterMiner) return true;
+        if (t.type === 'job' && state.filterJob) return true;
+        if (t.type === 'promo' && state.filterPromocodes) return true;
+        return false;
+    });
+
     if (filtered.length === 0) {
-        const txt = LOCALES[state.currentLang]['transactions.no'] || LOCALES[state.currentLang].noOrders || 'No transactions';
+        const txt = LOCALES[state.currentLang]['transactions.no'] || 'No transactions';
         DOM.txList.innerHTML = `<div class="small-muted">${txt}</div>`;
         return;
     }
+
     filtered.forEach(t => {
-        const div = document.createElement('div'); div.className = 'tx-item';
+        const div = document.createElement('div');
+        div.className = 'tx-item';
         const when = new Date(t.time).toLocaleString(localeCode(state.currentLang), { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+
         if (t.type === 'buy') {
             const action = (state.currentLang === 'ru' ? 'ПОКУПКА' : LOCALES[state.currentLang]['button.buy'].toUpperCase());
             div.innerHTML = `<div><span class="type-buy">${action}</span> ${trim5(t.amount)} YarikCoin — ${formatCurrency(t.total)}</div><div class="small-muted">(${when})</div>`;
@@ -268,6 +284,12 @@ function renderTxs() {
         } else if (t.type === 'promo') {
             const action = (state.currentLang === 'ru' ? 'Промокод' : 'Promocode');
             div.innerHTML = `<div><span class="type-buy">${action}</span> ${trim5(t.amount)} YarikCoin — ${formatCurrency(t.total)}</div><div class="small-muted">(${when})</div>`;
+        } else if (t.type === 'mine') {
+            const action = (state.currentLang === 'ru' ? 'МАЙНЕР' : 'MINER');
+            div.innerHTML = `<div><span class="type-miner">${action}</span> ${trim5(t.amount)} YarikCoin — ${formatCurrency(t.total)}</div><div class="small-muted">(${when})</div>`;
+        } else if (t.type === 'job') {
+            const action = (state.currentLang === 'ru' ? 'РАБОТА' : 'JOB');
+            div.innerHTML = `<div><span class="type-job">${action}</span> ${formatCurrency(t.amount)}</div><div class="small-muted">(${when})</div>`;
         }
         DOM.txList.appendChild(div);
     });
@@ -1039,6 +1061,32 @@ function initUI() {
     // Order preview live update
     DOM.orderAmount.addEventListener('input', updateOrderPreview);
     DOM.orderPrice.addEventListener('input', updateOrderPreview);
+
+    DOM.filterBuy.addEventListener('change', () => {
+        state.filterBuy = DOM.filterBuy.checked;
+        localStorage.setItem(STORAGE_KEYS.filterBuy, state.filterBuy);
+        renderTxs();
+    });
+    DOM.filterSell.addEventListener('change', () => {
+        state.filterSell = DOM.filterSell.checked;
+        localStorage.setItem(STORAGE_KEYS.filterSell, state.filterSell);
+        renderTxs();
+    });
+    DOM.filterMiner.addEventListener('change', () => {
+        state.filterMiner = DOM.filterMiner.checked;
+        localStorage.setItem(STORAGE_KEYS.filterMiner, state.filterMiner);
+        renderTxs();
+    });
+    DOM.filterJob.addEventListener('change', () => {
+        state.filterJob = DOM.filterJob.checked;
+        localStorage.setItem(STORAGE_KEYS.filterJob, state.filterJob);
+        renderTxs();
+    });
+    DOM.filterPromocodes.addEventListener('change', () => {
+        state.filterPromocodes = DOM.filterPromocodes.checked;
+        localStorage.setItem(STORAGE_KEYS.filterPromocodes, state.filterPromocodes);
+        renderTxs();
+    });
 }
 
 function updateOrderPreview() {
@@ -1056,6 +1104,13 @@ function updateOrderPreview() {
 
 function init() {
     applyTranslations();
+
+    DOM.filterBuy.checked = state.filterBuy;
+    DOM.filterSell.checked = state.filterSell;
+    DOM.filterMiner.checked = state.filterMiner;
+    DOM.filterJob.checked = state.filterJob;
+    DOM.filterPromocodes.checked = state.filterPromocodes;
+
     document.querySelectorAll('#languageSwitch .lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === state.currentLang);
     });

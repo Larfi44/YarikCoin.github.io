@@ -514,3 +514,10 @@ canvas {
         grid-template-columns: 1fr;
     }
 }
+.tx-item .type-miner {
+    color: #ff8f00; /* Amber */
+}
+
+.tx-item .type-job {
+    color: #42a5f5; /* Blue */
+}

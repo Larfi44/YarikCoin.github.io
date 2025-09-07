@@ -489,6 +489,7 @@ function minerClaim() {
         state.coinBalance += amt; state.miner.totalMined -= amt; localStorage.setItem(STORAGE_KEYS.minerTotal, String(state.miner.totalMined)); localStorage.setItem(STORAGE_KEYS.coinBalance, String(state.coinBalance));
         initMinerUI(); updateBalanceUI(); state.tx.unshift({ id: 'tx_mine_claim_' + Date.now(), type: 'mine', amount: amt, pricePer: state.currentPrice || 0, total: amt * (state.currentPrice || 0), time: Date.now() });
         localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
+        renderTxs();
         showNotification((state.currentLang === 'ru' ? 'Майнер: добыто ' : 'Mined: ') + String(amt) + ' YarikCoin (' + formatCurrency(amt * (state.currentPrice || 0)) + ')');
     } else showNotification(state.currentLang === 'ru' ? 'Нечего забирать' : 'Nothing to claim');
 }
@@ -522,6 +523,7 @@ function claimJobSalary() {
     const amt = state.jobAccum; state.balance += amt; state.jobAccum = 0; localStorage.setItem(STORAGE_KEYS.balance, String(state.balance)); localStorage.setItem(STORAGE_KEYS.jobAccum, '0'); updateBalanceUI(); updateJobsUI();
     state.tx.unshift({ id: 'tx_job_' + Date.now(), type: 'job', amount: amt, pricePer: 1, total: amt, time: Date.now() });
     localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
+    renderTxs();
     showNotification((state.currentLang === 'ru' ? 'Зарплата забрана: ' : 'Salary claimed: ') + formatCurrency(amt));
 }
 
@@ -952,6 +954,7 @@ function setLanguage(lang) {
     });
     // Update order total preview localization
     updateOrderPreview();
+    renderChartFor(state.viewHours);
 }
 
 function initUI() {
@@ -1033,7 +1036,12 @@ function initUI() {
     DOM.settingsBtn.addEventListener('click', () => openModal(DOM.settingsModal));
     DOM.closeSettings.addEventListener('click', () => closeModal(DOM.settingsModal));
     DOM.volumeControl.addEventListener('input', () => {
-        try { DOM.mainMusic.volume = parseFloat(DOM.volumeControl.value); } catch (e) { /* ignore */ }
+        try {
+            const newVolume = parseFloat(DOM.volumeControl.value);
+            DOM.mainMusic.volume = newVolume;
+            state.volume = newVolume;
+            localStorage.setItem(STORAGE_KEYS.volume, newVolume);
+        } catch (e) { /* ignore */ }
     });
 
     document.querySelectorAll('#languageSwitch .lang-btn').forEach(btn => {
@@ -1118,6 +1126,9 @@ function updateOrderPreview() {
 
 function init() {
     applyTranslations();
+
+    DOM.volumeControl.value = state.volume;
+    DOM.mainMusic.volume = state.volume;
 
     DOM.filterBuy.checked = state.filterBuy;
     DOM.filterSell.checked = state.filterSell;

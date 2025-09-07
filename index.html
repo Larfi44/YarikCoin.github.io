@@ -131,7 +131,6 @@
             <div class="card">
                 <div class="card-title-row">
                     <div style="font-weight:700; font-size:16px" data-i18n="transactions.title">Transactions</div>
-                    <button id="clearTxBtn" class="btn btn-sm" data-i18n="button.clear">Clear</button>
                 </div>
                 <div class="small-muted" data-i18n="transactions.hint">Your buy/sell history</div>
                 <div id="transactionFilters" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px;">
@@ -250,6 +249,7 @@
             <label id="tradeLabel">Amount</label>
             <input id="tradeAmount" type="number" class="trade-input" placeholder="0" min="0" step="any" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ccc" />
             <div id="tradeInfo" class="small-muted" style="margin-top:8px"></div>
+        <div id="tradeMax" class="small-muted" style="margin-top:8px"></div>
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px">
             <button id="cancelTradeBtn" class="btn" data-i18n="button.cancel">Cancel</button>

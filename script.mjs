@@ -46,6 +46,7 @@ const DOM = {
     tradeLabel: document.getElementById('tradeLabel'),
     tradeAmount: document.getElementById('tradeAmount'),
     tradeInfo: document.getElementById('tradeInfo'),
+    tradeMax: document.getElementById('tradeMax'),
     confirmTradeBtn: document.getElementById('confirmTradeBtn'),
     cancelTradeBtn: document.getElementById('cancelTradeBtn'),
     mainMusic: document.getElementById('mainMusic'),
@@ -74,7 +75,6 @@ const DOM = {
     minerClaim: document.getElementById('minerClaim'),
     orderTypeSelector: document.getElementById('orderTypeSelector'),
     notificationArea: document.getElementById('notification-area'),
-    clearTxBtn: document.getElementById('clearTxBtn'),
     chartTypeSelector: document.getElementById('chartTypeSelector'),
     chartThemeSelector: document.getElementById('chartThemeSelector'),
     chartOptionsSelector: document.getElementById('chartOptionsSelector'),
@@ -136,7 +136,9 @@ const LOCALES = {
         'balance.label':'Balance:','onbalance.label':'YarikCoin on balance:','settings.title':'Settings','settings.volume':'Volume','settings.language':'Language',
         'button.support':'Tech support','transactions.no':'No transactions','noOrders':'No orders',
         'filter.buy':'Buy','filter.sell':'Sell','filter.miner':'Miner','filter.job':'Job','filter.promocodes':'Promocodes',
-        'order.total_preview': 'Total: {total}'
+        'order.total_preview': 'Total: {total}',
+        'trade.max_buy': 'You can buy a maximum of: {amount}',
+        'trade.max_sell': 'You can sell a maximum of: {amount}'
     },
     ru: {
         'brand.title': 'YarikCoin','brand.subtitle': 'Версия 2.1',
@@ -164,7 +166,9 @@ const LOCALES = {
         'balance.label':'Баланс:','onbalance.label':'YarikCoin на балансе:','settings.title':'Настройки','settings.volume':'Громкость','settings.language':'Язык',
         'button.support':'Техподдержка','transactions.no':'Транзакций нет','noOrders':'Ордеров нет',
         'filter.buy':'Покупка','filter.sell':'Продажа','filter.miner':'Майнер','filter.job':'Работа','filter.promocodes':'Промокоды',
-        'order.total_preview': 'Всего: {total}'
+        'order.total_preview': 'Всего: {total}',
+        'trade.max_buy': 'Вы можете максимум купить: {amount}',
+        'trade.max_sell': 'Вы можете максимум продать: {amount}'
     }
 };
 
@@ -368,13 +372,13 @@ function formatTime(seconds, lang) {
     const h = Math.round(seconds / 3600);
 
     if (lang === 'ru') {
-        if (s > 3600 * 5) return `${s}с (${m} мин, ${h} ч)`;
-        if (s > 600) return `${s}с (${m} мин)`;
-        return `${s}с`;
+        if (s > 3600 * 5) return `${s} с (${m} мин, ${h} ч)`;
+        if (s > 600) return `${s} с (${m} мин)`;
+        return `${s} с`;
     } else {
-        if (s > 3600 * 5) return `${s}s (${m} min, ${h} h)`;
-        if (s > 600) return `${s}s (${m} min)`;
-        return `${s}s`;
+        if (s > 3600 * 5) return `${s} s (${m} min, ${h} h)`;
+        if (s > 600) return `${s} s (${m} min)`;
+        return `${s} s`;
     }
 }
 
@@ -426,8 +430,6 @@ function handleOfflineMining() {
     const newCarry = expected - successes;
     if (successes > 0) {
         state.miner.totalMined = (state.miner.totalMined || 0) + successes;
-        state.tx.unshift({ id: 'tx_mine_off_' + Date.now(), type: 'mine', amount: successes, pricePer: state.currentPrice || 0, total: successes * (state.currentPrice || 0), time: Date.now() });
-        localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
     }
     state.miner.fracCarry = newCarry;
     state.miner.lastSeen = Date.now();
@@ -462,8 +464,6 @@ function startMinerOnline() {
             if (Math.random() < p) {
                 state.miner.totalMined = (state.miner.totalMined || 0) + 1;
                 localStorage.setItem(STORAGE_KEYS.minerTotal, String(state.miner.totalMined));
-                state.tx.unshift({ id: 'tx_mine_' + Date.now(), type: 'mine', amount: 1, pricePer: state.currentPrice || 0, total: 1 * (state.currentPrice || 0), time: Date.now() });
-                localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
                 initMinerUI();
             }
         }
@@ -783,9 +783,15 @@ function updateTradeInfo() {
     if (state.pendingTradeType === 'buy') {
         const cost = (isFinite(v) && priceNow) ? (v * priceNow) : 0;
         DOM.tradeInfo.innerText = (state.currentLang === 'ru' ? `Стоимость: ${formatCurrency(cost)}` : `Cost: ${formatCurrency(cost)}`);
+        const maxBuy = state.balance / priceNow;
+        const maxBuyText = LOCALES[state.currentLang]['trade.max_buy'] || 'You can buy a maximum of: {amount}';
+        DOM.tradeMax.innerText = maxBuyText.replace('{amount}', trim5(maxBuy));
     } else {
         const rev = (isFinite(v) && priceNow) ? (v * priceNow) : 0;
         DOM.tradeInfo.innerText = (state.currentLang === 'ru' ? `Вы получите: ${formatCurrency(rev)}` : `You will receive: ${formatCurrency(rev)}`);
+        const maxSell = state.coinBalance;
+        const maxSellText = LOCALES[state.currentLang]['trade.max_sell'] || 'You can sell a maximum of: {amount}';
+        DOM.tradeMax.innerText = maxSellText.replace('{amount}', trim5(maxSell));
     }
 }
 function confirmTrade() {
@@ -1048,10 +1054,7 @@ function initUI() {
         btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
     });
 
-    DOM.clearTxBtn.addEventListener('click', () => {
-        if (!confirm(LOCALES[state.currentLang].confirmClearTx || 'Clear transactions?')) return;
-        state.tx = []; localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx)); renderTxs();
-    });
+    
 
     DOM.supportBtn.addEventListener('click', () => {
         window.open('https://larfi44.github.io/Yarik_Studio.github.io/support.html', '_blank');

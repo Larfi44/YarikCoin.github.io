@@ -993,6 +993,10 @@ function initUI() {
         state.tx = []; localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx)); renderTxs();
     });
 
+    DOM.supportBtn.addEventListener('click', () => {
+        window.open('https://larfi44.github.io/Yarik_Studio.github.io/support.html', '_blank');
+    });
+
     DOM.placeOrder.addEventListener('click', placeOrder);
     DOM.cancelAllOrders.addEventListener('click', cancelAllOrders);
 
@@ -1074,6 +1078,17 @@ function init() {
 
     // ensure order preview initially updated
     updateOrderPreview();
+
+    // Attempt to play main music
+    try {
+        DOM.mainMusic.volume = state.volume; // Set initial volume
+        DOM.mainMusic.play().catch(e => {
+            console.log("Autoplay prevented:", e);
+            // Optionally, show a play button to the user if autoplay is blocked
+        });
+    } catch (e) {
+        console.log("Error playing music:", e);
+    }
 }
 
 init();

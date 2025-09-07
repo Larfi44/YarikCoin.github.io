@@ -153,11 +153,11 @@ const LOCALES = {
 };
 
 const chartThemes = {
-    green: { main: '#2e7d32', gradient: ['rgba(46,125,50,0.14)', 'rgba(46,125,50,0.02)'] },
-    blue: { main: '#1976d2', gradient: ['rgba(25,118,210,0.14)', 'rgba(25,118,210,0.02)'] },
-    red: { main: '#c62828', gradient: ['rgba(198,40,40,0.14)', 'rgba(198,40,40,0.02)'] },
-    purple: { main: '#6a1b9a', gradient: ['rgba(106,27,154,0.14)', 'rgba(106,27,154,0.02)'] },
-    black: { main: '#111111', gradient: ['rgba(17,17,17,0.22)', 'rgba(17,17,17,0.04)'] }
+    green: { main: '#2e7d32', gradient: ['rgba(46,125,50,0.44)', 'rgba(46,125,50,0.12)'] },
+    blue: { main: '#1976d2', gradient: ['rgba(25,118,210,0.44)', 'rgba(25,118,210,0.12)'] },
+    red: { main: '#c62828', gradient: ['rgba(198,40,40,0.44)', 'rgba(198,40,40,0.12)'] },
+    purple: { main: '#6a1b9a', gradient: ['rgba(106,27,154,0.44)', 'rgba(106,27,154,0.12)'] },
+    black: { main: '#111111', gradient: ['rgba(17,17,17,0.52)', 'rgba(17,17,17,0.14)'] }
 };
 
 const state = {

@@ -360,6 +360,24 @@ function minerExpectedSecondsPerCoin(level, priceVal) {
     return 1 / p;
 }
 
+function formatTime(seconds, lang) {
+    if (!isFinite(seconds)) return '—';
+
+    const s = Math.round(seconds);
+    const m = Math.round(seconds / 60);
+    const h = Math.round(seconds / 3600);
+
+    if (lang === 'ru') {
+        if (s > 3600 * 5) return `${s}с (${m} мин, ${h} ч)`;
+        if (s > 600) return `${s}с (${m} мин)`;
+        return `${s}с`;
+    } else {
+        if (s > 3600 * 5) return `${s}s (${m} min, ${h} h)`;
+        if (s > 600) return `${s}s (${m} min)`;
+        return `${s}s`;
+    }
+}
+
 function initMinerUI() {
     DOM.minerLevel.textContent = String(state.miner.level || 0);
     const nextCost = minerNextLevelCost(state.miner.level);
@@ -372,11 +390,7 @@ function initMinerUI() {
     DOM.minerTotalMined.textContent = String(Math.floor(state.miner.totalMined || 0));
     DOM.minerTotalUsd.textContent = formatCurrency((Math.floor(state.miner.totalMined || 0)) * (state.currentPrice || 0));
     const avgSec = minerExpectedSecondsPerCoin(state.miner.level, state.currentPrice);
-    if (isFinite(avgSec)) {
-        if (avgSec > 3600 * 5) DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s (${Math.round(avgSec / 60)} min, ${Math.round(avgSec / 3600)} h)`;
-        else if (avgSec > 600) DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s (${Math.round(avgSec / 60)} min)`;
-        else DOM.minerAvgTime.innerText = `${Math.round(avgSec)}s`;
-    } else DOM.minerAvgTime.innerText = '—';
+    DOM.minerAvgTime.innerText = formatTime(avgSec, state.currentLang);
     const chancePct = minerProbPerSecond(state.miner.level, state.currentPrice) * 100;
     DOM.minerChanceVal.innerText = (state.miner.level > 0 ? chancePct.toFixed(6) + '%' : '0%');
     if (state.miner.level === 0) {

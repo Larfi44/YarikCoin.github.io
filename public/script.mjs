@@ -22,7 +22,12 @@ const STORAGE_KEYS = {
     currentJob: 'yarikcoin_current_job',
     jobAccum: 'yarikcoin_job_accum',
     jobLastSeen: 'yarikcoin_job_lastseen',
-    usedPromos: 'yarikcoin_used_promos'
+    usedPromos: 'yarikcoin_used_promos',
+    filterBuy: 'yarikcoin_filter_buy',
+    filterSell: 'yarikcoin_filter_sell',
+    filterMiner: 'yarikcoin_filter_miner',
+    filterJob: 'yarikcoin_filter_job',
+    filterPromocodes: 'yarikcoin_filter_promocodes'
 };
 
 const DOM = {
@@ -113,7 +118,9 @@ const LOCALES = {
         'options.markers':'Max & Min Price','options.trades':'My Trades',
         'theme.green':'Green','theme.blue':'Blue','theme.red':'Red','theme.purple':'Purple','theme.black':'Black',
         'gr.auto':'Auto','gr.hour':'Hour','gr.day':'Day','gr.month':'Month',
-        'transactions.title':'Transactions','transactions.hint':'Your buy/sell history',
+        'transactions.title':'Transactions',        'transactions.hint':'Your buy/sell history',
+        'tx.mine_claim':'Claimed {amount} YarikCoin from Miner',
+        'tx.job_claim':'Claimed {amount}$ from Job',
         'orders.title':'Orders','orders.desc':'Your active orders (limit buys and sells).',
         'orders.type':'Type','orders.amount':'Amount','orders.price':'Price (per coin)',
         'button.cancelAll':'Cancel all','button.open_custom':'Open Customisation','button.close_custom':'Close Customisation',
@@ -123,6 +130,7 @@ const LOCALES = {
         'tab.miner':'Miner','tab.work':'Job','work.title':'Work','work.current_label':'Current job:','work.next_label':'Next job:','work.accum_label':'Accumulated salary:','work.earn_label':'Earn per day:','work.hire':'Get next job','work.claim':'Claim salary',
         'balance.label':'Balance:','onbalance.label':'YarikCoin on balance:','settings.title':'Settings','settings.volume':'Volume','settings.language':'Language',
         'button.support':'Tech support','transactions.no':'No transactions','noOrders':'No orders',
+        'filter.buy':'Buy','filter.sell':'Sell','filter.miner':'Miner','filter.job':'Job','filter.promocodes':'Promocodes',
         'order.total_preview': 'Total: {total}'
     },
     ru: {
@@ -150,6 +158,7 @@ const LOCALES = {
         'tab.miner':'Майнер','tab.work':'Работа','work.title':'Работа','work.current_label':'Текущая работа:','work.next_label':'Следующая работа:','work.accum_label':'Накопленная зарплата:','work.earn_label':'Зарплата в день:','work.hire':'Получить следующую работу','work.claim':'Забрать зарплату',
         'balance.label':'Баланс:','onbalance.label':'YarikCoin на балансе:','settings.title':'Настройки','settings.volume':'Громкость','settings.language':'Язык',
         'button.support':'Техподдержка','transactions.no':'Транзакций нет','noOrders':'Ордеров нет',
+        'filter.buy':'Покупка','filter.sell':'Продажа','filter.miner':'Майнер','filter.job':'Работа','filter.promocodes':'Промокоды',
         'order.total_preview': 'Всего: {total}'
     }
 };
@@ -187,6 +196,11 @@ const state = {
     jobAccum: parseFloat(localStorage.getItem(STORAGE_KEYS.jobAccum) || '0') || 0,
     activeTab: localStorage.getItem(STORAGE_KEYS.activeTab) || 'miner',
     usedPromos: JSON.parse(localStorage.getItem(STORAGE_KEYS.usedPromos) || '[]'),
+    filterBuy: localStorage.getItem(STORAGE_KEYS.filterBuy) !== 'false',
+    filterSell: localStorage.getItem(STORAGE_KEYS.filterSell) !== 'false',
+    filterMiner: localStorage.getItem(STORAGE_KEYS.filterMiner) !== 'false',
+    filterJob: localStorage.getItem(STORAGE_KEYS.filterJob) !== 'false',
+    filterPromocodes: localStorage.getItem(STORAGE_KEYS.filterPromocodes) !== 'false',
     currentPrice: 0
 };
 

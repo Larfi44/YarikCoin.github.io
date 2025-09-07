@@ -134,6 +134,13 @@
                     <button id="clearTxBtn" class="btn btn-sm" data-i18n="button.clear">Clear</button>
                 </div>
                 <div class="small-muted" data-i18n="transactions.hint">Your buy/sell history</div>
+                <div id="transactionFilters" style="margin-top:10px; display:flex; flex-wrap:wrap; gap:10px;">
+                    <label><input type="checkbox" id="filterBuy" checked> <span data-i18n="filter.buy">Buy</span></label>
+                    <label><input type="checkbox" id="filterSell" checked> <span data-i18n="filter.sell">Sell</span></label>
+                    <label><input type="checkbox" id="filterMiner" checked> <span data-i18n="filter.miner">Miner</span></label>
+                    <label><input type="checkbox" id="filterJob" checked> <span data-i18n="filter.job">Job</span></label>
+                    <label><input type="checkbox" id="filterPromocodes" checked> <span data-i18n="filter.promocodes">Promocodes</span></label>
+                </div>
                 <div class="transactions" id="txList" style="margin-top:10px"></div>
             </div>
 

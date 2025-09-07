@@ -1,4 +1,4 @@
-import price from '../data/price.mjs';
+import price from './data/price.mjs';
 
 const STORAGE_KEYS = {
     balance: 'yarikcoin_balance',

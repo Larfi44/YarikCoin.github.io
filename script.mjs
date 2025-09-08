@@ -256,6 +256,10 @@ function updateBalanceUI() {
     if (DOM.sellBtn) DOM.sellBtn.disabled = !(state.coinBalance > 0);
 }
 
+function saveBalance() {
+    localStorage.setItem(STORAGE_KEYS.balance, trim5(state.balance));
+}
+
 /* Transactions rendering: exclude mine/job but include promo */
 function renderTxs() {
     DOM.txList.innerHTML = '';
@@ -338,7 +342,7 @@ function processOfflineOrders() {
         });
         if (changed) {
             state.orders = remaining; saveOrders();
-            localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.coinBalance, state.coinBalance); updateBalanceUI();
+            saveBalance(); localStorage.setItem(STORAGE_KEYS.coinBalance, state.coinBalance); updateBalanceUI();
         }
     }
     localStorage.setItem(STORAGE_KEYS.lastHour, String(now)); notifications.forEach(n => showNotification(n));
@@ -474,11 +478,11 @@ function minerUpgrade() {
     const nextCost = minerNextLevelCost(state.miner.level);
     if (state.miner.level === 0) {
         if (state.balance < nextCost) { alert(LOCALES[state.currentLang].notEnoughFunds); return; }
-        state.balance -= nextCost; state.miner.level = 1; localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
+        state.balance -= nextCost; state.miner.level = 1; saveBalance(); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
         initMinerUI(); updateBalanceUI(); showNotification((state.currentLang === 'ru' ? 'Майнер куплен' : 'Miner purchased'));
     } else {
         if (state.balance < nextCost) { alert(LOCALES[state.currentLang].notEnoughFunds); return; }
-        state.balance -= nextCost; state.miner.level += 1; localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
+        state.balance -= nextCost; state.miner.level += 1; saveBalance(); localStorage.setItem(STORAGE_KEYS.minerLevel, String(state.miner.level));
         initMinerUI(); updateBalanceUI(); showNotification((state.currentLang === 'ru' ? 'Майнер улучшен' : 'Miner upgraded'));
     }
 }
@@ -514,13 +518,13 @@ function hireNextJob() {
     const next = jobs.find(j => j.id === (state.currentJob || 0) + 1);
     if (!next) { alert(state.currentLang === 'ru' ? 'Нет следующей работы' : 'No next job'); return; }
     if (state.balance < next.cost) { alert(LOCALES[state.currentLang].notEnoughFunds || 'Not enough funds'); return; }
-    state.balance -= next.cost; state.currentJob = next.id; localStorage.setItem(STORAGE_KEYS.balance, state.balance); localStorage.setItem(STORAGE_KEYS.currentJob, String(state.currentJob));
+    state.balance -= next.cost; state.currentJob = next.id; saveBalance(); localStorage.setItem(STORAGE_KEYS.currentJob, String(state.currentJob));
     updateBalanceUI(); updateJobsUI(); showNotification((state.currentLang === 'ru' ? 'Устроились на работу: ' : 'Hired: ') + next.name[state.currentLang]);
 }
 
 function claimJobSalary() {
     if (!(state.jobAccum > 0)) { showNotification(state.currentLang === 'ru' ? 'Накопленной зарплаты нет' : 'No salary to claim'); return; }
-    const amt = state.jobAccum; state.balance += amt; state.jobAccum = 0; localStorage.setItem(STORAGE_KEYS.balance, String(state.balance)); localStorage.setItem(STORAGE_KEYS.jobAccum, '0'); updateBalanceUI(); updateJobsUI();
+    const amt = state.jobAccum; state.balance += amt; state.jobAccum = 0; saveBalance(); localStorage.setItem(STORAGE_KEYS.jobAccum, '0'); updateBalanceUI(); updateJobsUI();
     state.tx.unshift({ id: 'tx_job_' + Date.now(), type: 'job', amount: amt, pricePer: 1, total: amt, time: Date.now() });
     localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
     renderTxs();
@@ -803,12 +807,12 @@ function confirmTrade() {
         if (state.balance < cost) { alert(LOCALES[state.currentLang].notEnoughFunds || 'Not enough funds'); return; }
         state.balance -= cost; state.coinBalance += amt;
         state.tx.unshift({ id: 'tx_buy_' + Date.now(), type: 'buy', amount: amt, pricePer: priceNow, total: cost, time: Date.now() });
-        localStorage.setItem(STORAGE_KEYS.balance, String(state.balance)); localStorage.setItem(STORAGE_KEYS.coinBalance, String(state.coinBalance));
+        saveBalance(); localStorage.setItem(STORAGE_KEYS.coinBalance, String(state.coinBalance));
     } else {
         if (state.coinBalance < amt) { alert(LOCALES[state.currentLang].notEnoughYarikCoin || 'Not enough YarikCoin'); return; }
         state.coinBalance -= amt; state.balance += amt * priceNow;
         state.tx.unshift({ id: 'tx_sell_' + Date.now(), type: 'sell', amount: amt, pricePer: priceNow, total: amt*priceNow, time: Date.now() });
-        localStorage.setItem(STORAGE_KEYS.balance, String(state.balance)); localStorage.setItem(STORAGE_KEYS.coinBalance, String(state.coinBalance));
+        saveBalance(); localStorage.setItem(STORAGE_KEYS.coinBalance, String(state.coinBalance));
     }
     localStorage.setItem(STORAGE_KEYS.tx, JSON.stringify(state.tx));
     updateBalanceUI(); renderTxs(); closeModal(DOM.tradeModal); showNotification((state.currentLang === 'ru' ? 'Ордер выполнен' : 'Trade executed'));
@@ -863,6 +867,12 @@ const promoGroups = {
         normalizePromoText('canada is state of trumpLand'),
         normalizePromoText("canada is state of trump's Land"),
         normalizePromoText('canada is state of trumpsland'),
+        normalizePromoText('canada is a state of usa'),
+        normalizePromoText('canada is a state of united states'),
+        normalizePromoText('canada is a state of unites states of america'),
+        normalizePromoText('canada is a state of trumpLand'),
+        normalizePromoText("canada is a state of trump's Land"),
+        normalizePromoText('canada is a state of trumpsland'),
     ]
 };
 

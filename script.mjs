@@ -856,9 +856,11 @@ const promoGroups = {
     ],
     'Trump': [
         normalizePromoText('trump'),
+        normalizePromoText('tramp'),
     ],
     'Hirohito': [
         normalizePromoText('hirohito'),
+        normalizePromoText('hirahito'),
     ],
     'Canada_is_state_of_usa': [
         normalizePromoText('canada is state of usa'),

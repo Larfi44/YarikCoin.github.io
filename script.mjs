@@ -570,7 +570,7 @@ function firstLastNonNull(arr) {
     return { first, last };
 }
 
-function renderChartFor(hours, customStartHour = null) {
+function renderChartFor(hours, customStartHour = null, updatePrice = true) {
     const now = currentHourIndex();
     // Determine last available index
     let lastAvailableIndex = -1;
@@ -602,15 +602,17 @@ function renderChartFor(hours, customStartHour = null) {
     const { labels, data } = aggregateData(start, end, bucket);
     if (state.chart) try { state.chart.destroy(); } catch (e) { /* ignore */ }
 
-    const fl = firstLastNonNull(data);
-    if (fl.last !== null && typeof fl.last !== 'undefined') {
-        state.currentPrice = fl.last;
-    } else {
-        let lastAvail = null;
-        for (let i = price.length - 1; i >= 0; i--) { if (typeof price[i] !== 'undefined' && price[i] !== null) { lastAvail = price[i]; break; } }
-        if (lastAvail !== null) state.currentPrice = lastAvail;
+    if (updatePrice) {
+        const fl = firstLastNonNull(data);
+        if (fl.last !== null && typeof fl.last !== 'undefined') {
+            state.currentPrice = fl.last;
+        } else {
+            let lastAvail = null;
+            for (let i = price.length - 1; i >= 0; i--) { if (typeof price[i] !== 'undefined' && price[i] !== null) { lastAvail = price[i]; break; } }
+            if (lastAvail !== null) state.currentPrice = lastAvail;
+        }
+        DOM.price.innerText = state.currentPrice ? formatCurrency(state.currentPrice) : '0$';
     }
-    DOM.price.innerText = state.currentPrice ? formatCurrency(state.currentPrice) : '0$';
 
     const theme = chartThemes[state.chartTheme] || chartThemes.green;
     const ctx = DOM.priceChartCanvas.getContext('2d');
@@ -751,10 +753,10 @@ function panBy(direction, amount) {
     let newStart = (state.viewStartHour || (now - state.viewHours + 1)) + (direction === 'left' ? -amount : amount);
     if (newStart < 0) newStart = 0;
     let lastAvailableIndex = -1;
-    for (let i = price.length - 1; i >= 0; i--) { if (typeof price[i] !== 'undefined' && price[i] !== null) { lastAvailableIndex = i; break; } }
+    // for (let i = price.length - 1; i >= 0; i--) { if (typeof price[i] !== 'undefined' && price[i] !== null) { lastAvailableIndex = i; break; } }
     const maxStart = (lastAvailableIndex >= 0) ? (lastAvailableIndex - state.viewHours + 1) : (now - state.viewHours + 1);
     newStart = Math.min(newStart, Math.max(0, maxStart));
-    renderChartFor(state.viewHours, newStart);
+    renderChartFor(state.viewHours, newStart, false);
 }
 function panRange(direction) {
     let shift = 0;
